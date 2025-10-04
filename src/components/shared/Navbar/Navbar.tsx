@@ -12,7 +12,8 @@ const Navbar = () => {
       <div className="flex h-full items-center justify-between px-6 md:px-8">
         {/* Logo with consistent padding */}
         <Link href="/" className="flex-shrink-0 ">
-          <Logo />
+          {/* <Logo /> */}
+          <h1 className="text-2xl font-bold">My Portfolio</h1>
         </Link>
 
         {/* Desktop Menu with consistent horizontal spacing */}

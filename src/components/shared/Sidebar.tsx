@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Home, PlusCircle, LogOut } from "lucide-react";
-import { signOut } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
 // import toast from "react-hot-toast";
 // import { useRouter } from "next/navigation";
 
@@ -34,7 +34,7 @@ export default function Sidebar() {
   // };
 
 
-
+  const session = useSession ()
 
 
   return (
@@ -60,7 +60,9 @@ export default function Sidebar() {
 
       {/* Bottom action */}
       <div className="p-4 border-t border-gray-500">
-        <Button
+        {
+          session.status === "authenticated" &&
+          <Button
           variant="destructive"
           className="w-full justify-start gap-2 cursor-pointer"
           onClick={() => signOut()}
@@ -68,6 +70,7 @@ export default function Sidebar() {
           <LogOut className="h-4 w-4" />
           Logout
         </Button>
+        }
       </div>
     </aside>
   );
