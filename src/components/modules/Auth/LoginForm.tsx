@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import { signIn } from "next-auth/react";
 import {
   Form,
   FormControl,
@@ -14,11 +15,11 @@ import {
 } from "@/components/ui/form";
 import Image from "next/image";
 import { Input } from "@/components/ui/input";
-import { Eye, EyeOff } from "lucide-react"; // ✅ Eye Icon এর জন্য
-import { zodResolver } from "@hookform/resolvers/zod"; // ✅ Zod Resolver
-import * as z from "zod"; // ✅ Zod
-import toast from "react-hot-toast"; // ✅ নোটিফিকেশনের জন্য
-import { useRouter } from "next/navigation"; // ✅ রিডাইরেক্টের জন্য
+import { Eye, EyeOff } from "lucide-react"; 
+import { zodResolver } from "@hookform/resolvers/zod"; 
+import * as z from "zod"; 
+import toast from "react-hot-toast"; 
+import { useRouter } from "next/navigation"; 
 
 // --- A. ZOD SCHEMA তৈরি (VALIDATION) ---
 const LoginFormSchema = z.object({
@@ -107,6 +108,7 @@ const onSubmit = async (values: LoginFormValues) => {
 
   const handleSocialLogin = (provider: "google" | "github") => {
     toast.error(`Social login for ${provider} is not implemented yet.`);
+   signIn()
   };
 
   return (
@@ -203,7 +205,9 @@ const onSubmit = async (values: LoginFormValues) => {
           <Button
             variant="outline"
             className="flex items-center justify-center gap-2"
-            onClick={() => handleSocialLogin("google")}
+            onClick={() => signIn('google', {
+              callbackUrl:"/dashboard"
+            })}
           >
             <Image
               src="https://img.icons8.com/color/24/google-logo.png"

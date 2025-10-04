@@ -3,34 +3,35 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Home, PlusCircle, LogOut } from "lucide-react";
-import toast from "react-hot-toast";
-import { useRouter } from "next/navigation";
+import { signOut } from "next-auth/react";
+// import toast from "react-hot-toast";
+// import { useRouter } from "next/navigation";
 
 export default function Sidebar() {
 
-   const router = useRouter();
+  //  const router = useRouter();
 
-  const handleLogout = async () => {
-    try {
-      const response = await fetch("http://localhost:5000/api/v1/auth/logout", {
-        method: "POST",
-        credentials: "include", 
-      });
+  // const handleLogout = async () => {
+  //   try {
+  //     const response = await fetch("http://localhost:5000/api/v1/auth/logout", {
+  //       method: "POST",
+  //       credentials: "include", 
+  //     });
 
-      if (!response.ok) {
-        console.error("Backend logout failed, proceeding with local cleanup.");
-      }
-    } catch (error) {
-      console.error("Network error during logout, proceeding with local cleanup.", error);
-    }
-    
+  //     if (!response.ok) {
+  //       console.error("Backend logout failed, proceeding with local cleanup.");
+  //     }
+  //   } catch (error) {
+  //     console.error("Network error during logout, proceeding with local cleanup.", error);
+  //   }
 
-    localStorage.removeItem("userRole"); 
-    localStorage.removeItem("accessToken"); 
-    
-    toast.success("Logged out successfully.");
-    router.push('/login'); 
-  };
+
+  //   localStorage.removeItem("userRole"); 
+  //   localStorage.removeItem("accessToken"); 
+
+  //   toast.success("Logged out successfully.");
+  //   router.push('/login'); 
+  // };
 
 
 
@@ -62,7 +63,7 @@ export default function Sidebar() {
         <Button
           variant="destructive"
           className="w-full justify-start gap-2 cursor-pointer"
-          onClick={handleLogout} 
+          onClick={() => signOut()}
         >
           <LogOut className="h-4 w-4" />
           Logout
