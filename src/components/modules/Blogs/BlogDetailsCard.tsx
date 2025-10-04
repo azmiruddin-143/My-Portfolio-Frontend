@@ -45,7 +45,7 @@ export default function BlogCard({ blog }: { blog: Blog }) {
               <Clock className="h-3 w-3" />
               <span className="font-medium">{blog.views} views</span>
             </div>
-            <span className="font-semibold">{blog.author.name}</span>
+            <span className="font-semibold">{blog.author?.name}</span>
           </div>
         </div>
         
