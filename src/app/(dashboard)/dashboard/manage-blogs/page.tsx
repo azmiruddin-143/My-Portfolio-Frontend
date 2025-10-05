@@ -199,7 +199,7 @@ export default function ManageBlog() {
           if (action === 'Delete') {
             openConfirmDialog(blog); // ✅ Delete Dialog ওপেন
           } else if (action === 'Edit') {
-            router.push(`/dashboard/blog/edit/${blog.id}`); // ✅ Edit Navigation
+            router.push(`/dashboard/blog/edit/${blog.id}`);
           } else if (action === 'View') {
             router.push(`/blogs/${blog.id}`); // ✅ View Navigation
           }
