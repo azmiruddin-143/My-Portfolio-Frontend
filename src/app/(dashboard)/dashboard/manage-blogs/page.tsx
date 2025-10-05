@@ -245,7 +245,7 @@ export default function ManageBlog() {
  
 
   return (
-    <div className="max-w-7xl mx-auto py-10 px-4">
+    <div className="container mx-auto py-10 px-4">
       <h1 className="text-4xl font-extrabold mb-8 text-gray-900">Manage Blog Posts</h1>
 
       {/* --- D. CONTROL BAR: Search Input and Actions --- */}

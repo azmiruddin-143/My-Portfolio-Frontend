@@ -56,45 +56,45 @@ export default function RegisterForm() {
   });
 
   // --- ২. ফর্ম সাবমিশন এবং ব্যাকএন্ডে ডেটা পাঠানো ---
-  const onSubmit = async (values: RegisterFormValues) => {
-    setIsSubmitting(true);
+  // const onSubmit = async (values: RegisterFormValues) => {
+  //   setIsSubmitting(true);
     
-    // আপনার রেজিস্ট্রেশন রুট
-    const API_URL = "http://localhost:5000/api/v1/auth"; 
-    const payload = { ...values, role: "USER" }; 
+  //   // আপনার রেজিস্ট্রেশন রুট
+  //   const API_URL = "http://localhost:5000/api/v1/auth"; 
+  //   const payload = { ...values, role: "USER" }; 
 
-    try {
-      const response = await fetch(API_URL, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(payload),
-      });
+  //   try {
+  //     const response = await fetch(API_URL, {
+  //       method: "POST",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //       },
+  //       body: JSON.stringify(payload),
+  //     });
 
-      const data = await response.json();
+  //     const data = await response.json();
 
-      if (response.ok && data.success) {
-        toast.success("Registration successful! Please log in.");
-        form.reset(); // ফর্ম রিসেট করুন
-        router.push('/login'); // সফল হলে লগইন পেজে রিডাইরেক্ট করুন
-      } else {
-        // ব্যাকএন্ড ভ্যালিডেশন এরর, যেমন ইমেল অলরেডি বিদ্যমান
-        toast.error(data.message || "Registration failed. Please try again.");
-      }
-    } catch (error) {
-      toast.error("Network error. Could not connect to the server.");
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
+  //     if (response.ok && data.success) {
+  //       toast.success("Registration successful! Please log in.");
+  //       form.reset(); // ফর্ম রিসেট করুন
+  //       router.push('/login'); // সফল হলে লগইন পেজে রিডাইরেক্ট করুন
+  //     } else {
+  //       // ব্যাকএন্ড ভ্যালিডেশন এরর, যেমন ইমেল অলরেডি বিদ্যমান
+  //       toast.error(data.message || "Registration failed. Please try again.");
+  //     }
+  //   } catch (error) {
+  //     toast.error("Network error. Could not connect to the server.");
+  //   } finally {
+  //     setIsSubmitting(false);
+  //   }
+  // };
 
   return (
     <div className="flex justify-center items-center min-h-screen bg-gray-50">
       <Form {...form}>
         <form
           // ✅ Invalid হলে submit হবে না এবং error দেখানো হবে
-          onSubmit={form.handleSubmit(onSubmit)} 
+          
           className="space-y-6 w-full max-w-md bg-white p-8 rounded-lg shadow-md"
         >
           <h2 className="text-3xl font-bold text-center">Register Now</h2>

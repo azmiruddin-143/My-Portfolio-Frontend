@@ -1,95 +1,242 @@
+// /* eslint-disable @typescript-eslint/no-explicit-any */
+
+
+// "use client";
+
+// import React, { useState } from 'react'; // ✅ useState যোগ করা হলো
+// import Link from "next/link";
+// import { Button } from "@/components/ui/button";
+// import { LogOut, Home, PlusCircle, Settings, Menu, Layers, PanelLeft } from "lucide-react";
+// import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+
+// const navItems = [
+//   { href: "/", label: "Home", icon: Home },
+//   { href: "/dashboard/create-blog", label: "Create Blog", icon: PlusCircle },
+//   { href: "/dashboard/manage-blogs", label: "Manage Blog", icon: Layers },
+//   { href: "/dashboard/manage-projects", label: "Manage Projects", icon: Layers },
+//   { href: "/dashboard/settings", label: "Settings", icon: Settings },
+// ];
+
+
+// const SidebarContent = ({status }: {  status: string }) => (
+
+
+
+
+
+//   <>
+//     {/* Top Logo / App Name Section */}
+//     <div className="flex items-center h-16 px-4 border-b border-gray-700">
+//       <span className="text-xl font-bold">My Portfolio</span>
+//     </div>
+
+//     {/* Main Navigation Area */}
+//     <nav className="flex-1 space-y-1 p-3 overflow-y-auto">
+//       {navItems.map((item) => (
+//         <Link
+//           key={item.href}
+//           href={item.href}
+//           className="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors text-gray-300 hover:bg-gray-800 hover:text-white"
+//         >
+//           <item.icon className="h-4 w-4" />
+//           {item.label}
+//         </Link>
+//       ))}
+//     </nav>
+
+//     {/* Bottom Action / User Profile Section */}
+
+//       <>
+//         {/* <ProfileSection user={user} /> */}
+//         <div className="p-3 border-t border-gray-700 bg-gray-900/70">
+//           <Button
+//             variant="destructive"
+//             className="w-full justify-start gap-3 cursor-pointer bg-red-600 hover:bg-red-700"
+//             // onClick={() => signOut({ callbackUrl: "/login" })}
+//           >
+//             <LogOut className="h-4 w-4" />
+//             Logout
+//           </Button>
+//         </div>
+//       </>
+
+//   </>
+// );
+
+
+
+// export default function Sidebar() {
+
+
+//   return (
+//     <>
+//       {/* 1. Desktop Sidebar (Large screens only) */}
+//       <aside className="hidden md:flex h-screen w-64 flex-col border-r border-gray-700 bg-gray-900 shadow-xl">
+//         <SidebarContent  status={status} />
+//       </aside>
+
+//       {/* 2. Mobile Drawer/Overlay (Small screens only) */}
+//       <div className="md:hidden  ">
+//         <Sheet>
+      
+//             <SheetTrigger className='left-2.5 relative top-5' asChild>
+           
+//                <PanelLeft />
+          
+//             </SheetTrigger>
+
+//           <SheetContent side="left" className="w-64 p-0 border-r-0 bg-gray-900">
+//             <SidebarContent status={status} />
+//           </SheetContent>
+//         </Sheet>
+
+      
+//       </div>
+//     </>
+//   );
+// }
+
+
+
+
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
+"use client"; 
 
-"use client";
-
-import React, { useState } from 'react'; // ✅ useState যোগ করা হলো
+import React, { useState } from 'react';
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { LogOut, Home, PlusCircle, Settings, Menu, Layers, PanelLeft } from "lucide-react";
-import { signOut, useSession } from "next-auth/react";
-// ✅ shadcn/ui Sheet কম্পোনেন্ট আমদানি
+import { LogOut, Home, PlusCircle, Settings, Layers, PanelLeft, Loader2, Menu } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { useRouter } from 'next/navigation'; // useRouter যোগ করা হলো
+import toast from 'react-hot-toast'; // Toast নোটিফিকেশনের জন্য
 
 const navItems = [
-  { href: "/", label: "Home", icon: Home },
-  { href: "/dashboard/create-blog", label: "Create Blog", icon: PlusCircle },
-  { href: "/dashboard/manage-blogs", label: "Manage Blog", icon: Layers },
-  { href: "/dashboard/manage-projects", label: "Manage Projects", icon: Layers },
-  { href: "/dashboard/settings", label: "Settings", icon: Settings },
+    { href: "/", label: "Home (Public)", icon: Home },
+    { href: "/dashboard/create-blog", label: "Create Blog", icon: PlusCircle },
+    { href: "/dashboard/manage-blogs", label: "Manage Blog", icon: Layers },
+    { href: "/dashboard/manage-projects", label: "Manage Projects", icon: Layers }, // Updated route to /projects
+    { href: "/dashboard/settings", label: "Settings", icon: Settings },
 ];
 
+// -------------------------------------------------------------------
+// Logout Handler Function
+// -------------------------------------------------------------------
 
-const SidebarContent = ({ user, status }: { user: any, status: string }) => (
-  <>
-    {/* Top Logo / App Name Section */}
-    <div className="flex items-center h-16 px-4 border-b border-gray-700">
-      <span className="text-xl font-bold">My Portfolio</span>
-    </div>
+interface SidebarContentProps {
+    handleLogout: () => void;
+    isLoggingOut: boolean;
+}
 
-    {/* Main Navigation Area */}
-    <nav className="flex-1 space-y-1 p-3 overflow-y-auto">
-      {navItems.map((item) => (
-        <Link
-          key={item.href}
-          href={item.href}
-          className="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors text-gray-300 hover:bg-gray-800 hover:text-white"
-        >
-          <item.icon className="h-4 w-4" />
-          {item.label}
-        </Link>
-      ))}
-    </nav>
-
-    {/* Bottom Action / User Profile Section */}
-    {status === "authenticated" && (
-      <>
-        {/* <ProfileSection user={user} /> */}
-        <div className="p-3 border-t border-gray-700 bg-gray-900/70">
-          <Button
-            variant="destructive"
-            className="w-full justify-start gap-3 cursor-pointer bg-red-600 hover:bg-red-700"
-            onClick={() => signOut({ callbackUrl: "/login" })}
-          >
-            <LogOut className="h-4 w-4" />
-            Logout
-          </Button>
+const SidebarContent = ({ handleLogout, isLoggingOut }: SidebarContentProps) => (
+    <>
+        {/* Top Logo / App Name Section */}
+        <div className="flex items-center h-16 px-4 border-b border-gray-700 bg-gray-900 text-white">
+            <span className="text-xl font-bold">My Portfolio Admin</span>
         </div>
-      </>
-    )}
-  </>
+
+        {/* Main Navigation Area */}
+        <nav className="flex-1 space-y-1 p-3 overflow-y-auto">
+            {navItems.map((item) => (
+                <Link
+                    key={item.href}
+                    href={item.href}
+                    className="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors text-gray-300 hover:bg-gray-800 hover:text-white"
+                >
+                    <item.icon className="h-4 w-4" />
+                    {item.label}
+                </Link>
+            ))}
+        </nav>
+
+        {/* Bottom Action / Logout Section */}
+        <div className="p-3 border-t border-gray-700 bg-gray-900/70">
+            <Button
+                variant="destructive"
+                className="w-full justify-start gap-3 cursor-pointer bg-red-600 hover:bg-red-700"
+                onClick={handleLogout}
+                disabled={isLoggingOut}
+            >
+                {isLoggingOut ? (
+                    <>
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                        Logging Out...
+                    </>
+                ) : (
+                    <>
+                        <LogOut className="h-4 w-4" />
+                        Logout
+                    </>
+                )}
+            </Button>
+        </div>
+    </>
 );
 
 
-
 export default function Sidebar() {
-  const { data: session, status } = useSession();
-  const user = session?.user;
+    const router = useRouter();
+    const [isLoggingOut, setIsLoggingOut] = useState(false);
 
-  return (
-    <>
-      {/* 1. Desktop Sidebar (Large screens only) */}
-      <aside className="hidden md:flex h-screen w-64 flex-col border-r border-gray-700 bg-gray-900 shadow-xl">
-        <SidebarContent user={user} status={status} />
-      </aside>
+    const handleLogout = async () => {
+        setIsLoggingOut(true);
+        // !!! আপনার ব্যাকএন্ডের সঠিক লগআউট API URL দিন !!!
+        const API_URL = "http://localhost:5000/api/v1/auth/logout"; 
 
-      {/* 2. Mobile Drawer/Overlay (Small screens only) */}
-      <div className="md:hidden  ">
-        <Sheet>
-      
-            <SheetTrigger className='left-2.5 relative top-5' asChild>
-           
-               <PanelLeft />
-          
-            </SheetTrigger>
+        try {
+            // POST request পাঠানো হচ্ছে। credentials: "include" এর মাধ্যমে কুকি পাঠানো হবে।
+            const response = await fetch(API_URL, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                credentials: "include", 
+                cache: 'no-store'
+            });
 
-          <SheetContent side="left" className="w-64 p-0 border-r-0 bg-gray-900">
-            <SidebarContent user={user} status={status} />
-          </SheetContent>
-        </Sheet>
+            // ধরে নেওয়া হচ্ছে ব্যাকএন্ড কুকি ডিলিট করে দেবে এবং 200/204 স্ট্যাটাস দেবে
+            if (response.ok || response.status === 204) {
+                toast.success("Logged out successfully!");
+            } else {
+                const data = await response.json();
+                toast.error(data.message || "Logout failed on server side.");
+            }
 
-      
-      </div>
-    </>
-  );
+        } catch (error) {
+            toast.error("Network error during logout.");
+        } finally {
+            setIsLoggingOut(false);
+            // API কলের সফলতা বা ব্যর্থতা নির্বিশেষে, লগইন পেজে রিডাইরেক্ট করে দিন
+            router.push('/login');
+        }
+    };
+
+    // Mobile sheet state (Optional: to close the sheet after logout)
+    const [isSheetOpen, setIsSheetOpen] = useState(false);
+
+    return (
+        <>
+            {/* 1. Desktop Sidebar (Large screens only) */}
+            <aside className="hidden md:flex h-screen w-64 flex-col border-r border-gray-700 bg-gray-900 shadow-xl">
+                <SidebarContent handleLogout={handleLogout} isLoggingOut={isLoggingOut} />
+            </aside>
+
+            {/* 2. Mobile Drawer/Overlay (Small screens only) */}
+            <div className="md:hidden">
+                <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
+                    <SheetTrigger className='left-2.5 relative top-5' asChild>
+                        <Button variant="ghost" size="icon">
+                            <Menu className='h-6 w-6' />
+                        </Button>
+                    </SheetTrigger>
+
+                    <SheetContent side="left" className="w-64 p-0 border-r-0 bg-gray-900 flex flex-col">
+                        <SidebarContent handleLogout={() => { 
+                            // Close sheet before logging out to prevent UI freeze
+                            setIsSheetOpen(false); 
+                            handleLogout(); 
+                        }} isLoggingOut={isLoggingOut} />
+                    </SheetContent>
+                </Sheet>
+            </div>
+        </>
+    );
 }

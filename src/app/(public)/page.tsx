@@ -1,6 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import BlogDetailsCard from '@/components/modules/Blogs/BlogDetailsCard';
+import AboutMeSection from '@/components/modules/Home/AboutMeSection';
 import Hero from '@/components/modules/Home/Hero';
+import SkillsSection from '@/components/modules/Home/SkillsSection';
 import React from 'react';
 
 const Homepage = async () => {
@@ -12,6 +14,9 @@ const Homepage = async () => {
   return (
     <div>
       <Hero />
+      <SkillsSection></SkillsSection>
+      <AboutMeSection></AboutMeSection>
+
       <h2 className="text-center my-5 text-4xl">Featured Posts</h2>
 
       <div className="grid grid-cols-1 container mx-auto md:grid-cols-2 lg:grid-cols-3 gap-8">

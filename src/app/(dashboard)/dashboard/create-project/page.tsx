@@ -50,8 +50,7 @@ async function createProjectAction(data: ProjectFormData) {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        // Add Authorization header here if needed:
-        // "Authorization": `Bearer ${token}`, 
+
       },
       body: JSON.stringify(validatedData),
       cache: 'no-store',
@@ -97,7 +96,11 @@ const defaultValues: ProjectFormData = {
   authorId: 3, // Default ID. In production, get this from an Auth context.
 };
 
-const CreateProject = () => {
+
+const CreateProject  =  () => {
+
+
+ 
   const [isSubmitting, setIsSubmitting] = useState(false);
   
   const form = useForm<ProjectFormData>({

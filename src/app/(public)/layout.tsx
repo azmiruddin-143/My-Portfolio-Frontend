@@ -9,9 +9,11 @@ export default function PublicLayout({
 }>) {
   return (
     <>
+
       <Navbar />
+      
         <Toaster
-            position="top-center" // আপনি নোটিফিকেশন কোথায় দেখাতে চান (top-right, bottom-center ইত্যাদি)
+            position="top-center" 
             reverseOrder={false}
         />
       <main className="min-h-dvh">{children}</main>

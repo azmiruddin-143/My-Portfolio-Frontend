@@ -1,44 +1,79 @@
-import Link from "next/link";
+'use client';
 
-export default async function Hero() {
+import React from 'react';
+import { motion } from 'framer-motion';
+import { Button } from '@/components/ui/button'; // shadcn Button
+
+
+const Hero = () => {
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.6, 
+      },
+    },
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: { opacity: 1, y: 0 },
+  };
+
   return (
-    <div>
-      <div className="max-h-screen w-full relative">
-        {/* Crimson Depth */}
-        <div
-          className="absolute inset-0 z-0"
-          style={{
-            background:
-              "radial-gradient(125% 125% at 50% 100%, #000000 40%, #2b0707 100%)",
-          }}
-        />
+    <section className="relative min-h-[80vh] flex items-center justify-center text-center p-8 bg-gray-50 dark:bg-gray-900 overflow-hidden">
+      
+      {/* Background Effect Placeholder (Replace with Aceternity/Custom BG) */}
+      <div className="absolute inset-0 opacity-10 bg-grid-black/5 dark:bg-grid-white/5" />
+      
+      <motion.div
+        className="z-10 max-w-4xl mx-auto space-y-8"
+        variants={containerVariants}
+        initial="hidden"
+        animate="visible"
+      >
+        {/* Main Title - Animated */}
+        <motion.h1 
+          className="text-6xl md:text-8xl font-extrabold tracking-tight text-gray-900 dark:text-white"
+          variants={itemVariants}
+        >
+          Hi, I'm &nbsp;
+          <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-teal-400">
+            Azmir Uddin
+          </span>
+        </motion.h1>
 
-        <section className="relative flex flex-col items-center justify-center text-center py-28 px-6 text-white">
-          {/* Headline */}
-          <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight max-w-5xl leading-tight">
-            Read. Learn. Share. <br className="hidden md:block" />
-            Ideas That Shape the Future
-          </h1>
-
-          {/* Subheadline */}
-          <p className="mt-6 text-lg md:text-xl max-w-2xl">
-            Discover in-depth articles, tutorials, and thought-provoking stories
-            from a global network of creators. Stay updated with fresh insights
-            on technology, design, productivity, and personal growth—all in one
-            place.
-          </p>
-
-          {/* CTA */}
-          <div className="mt-10 flex flex-col sm:flex-row gap-4">
-            <Link
-              href="/blogs"
-              className="inline-flex items-center justify-center px-8 py-4 font-medium rounded-xl border border-input hover:bg-accent hover:text-accent-foreground transition"
-            >
-              Explore Blogs
-            </Link>
-          </div>
-        </section>
-      </div>
-    </div>
+        {/* Subtitle - Animated */}
+        <motion.p 
+          className="text-xl md:text-2xl text-gray-600 dark:text-gray-400 max-w-3xl mx-auto"
+          variants={itemVariants}
+        >
+          A Full-Stack Developer specializing in building high-performance web applications using Next.js, TypeScript, and robust backend systems.
+        </motion.p>
+        
+        {/* Buttons - Animated */}
+        <motion.div 
+          className="flex flex-col sm:flex-row justify-center gap-4 pt-4"
+          variants={itemVariants}
+        >
+          <Button 
+            className="h-12 px-8 text-lg bg-blue-600 hover:bg-blue-700 shadow-lg"
+            onClick={() => window.location.href='/projects'} // Assuming /projects is your management route for now
+          >
+            Explore My Work
+          </Button>
+          <Button 
+            variant="outline" 
+            className="h-12 px-8 text-lg border-gray-400 dark:border-gray-600 dark:hover:bg-gray-800"
+            onClick={() => window.location.href='/contact'}
+          >
+            Get In Touch
+          </Button>
+        </motion.div>
+      </motion.div>
+    </section>
   );
-}
+};
+
+export default Hero;
