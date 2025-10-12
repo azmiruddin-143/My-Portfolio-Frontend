@@ -16,8 +16,7 @@ import {
 import { Eye, EyeOff } from "lucide-react"; 
 import { zodResolver } from "@hookform/resolvers/zod"; 
 import * as z from "zod"; 
-import toast from "react-hot-toast"; 
-import { useRouter } from "next/navigation"; 
+
 
 // --- ১. ZOD SCHEMA তৈরি (VALIDATION) ---
 const passwordStrengthRegex = new RegExp(
@@ -41,8 +40,9 @@ type RegisterFormValues = z.infer<typeof RegisterFormSchema>;
 
 export default function RegisterForm() {
   const [showPassword, setShowPassword] = useState(false);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const router = useRouter(); 
+
   
   const form = useForm<RegisterFormValues>({
     // ✅ zodResolver দিয়ে ভ্যালিডেশন যুক্ত করা হয়েছে

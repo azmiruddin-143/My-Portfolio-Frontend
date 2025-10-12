@@ -1,6 +1,7 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, } from "react";
 import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -11,6 +12,7 @@ import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import { Textarea } from "@/components/ui/textarea";
 import { Loader2 } from "lucide-react"; 
+import { revalidateProjectPage } from "@/app/revalidate-actions";
 
 // ----------------------------------------------------------------
 // A. ZOD SCHEMA (VALIDATION) - Create Blog থেকে আনা
@@ -75,7 +77,7 @@ export default function BlogForm({ initialData, type, blogId }: BlogFormProps) {
 
     try {
       // Edit এর জন্য PUT মেথড ব্যবহার করা হচ্ছে
-      const response = await fetch(`http://localhost:5000/api/v1/blog/${blogId}`, {
+      const response = await fetch(`https://developerazmir.vercel.app/api/v1/blog/${blogId}`, {
         method: "PUT", 
         headers: {
           "Content-Type": "application/json",
@@ -87,6 +89,7 @@ export default function BlogForm({ initialData, type, blogId }: BlogFormProps) {
       const data = await response.json();
 
       if (response.ok && data.success) {
+        await revalidateProjectPage(blogId.toString());
         toast.success(`Blog post ID ${blogId} updated successfully!`);
         // আপডেটের পর ম্যানেজ পেজে রিডাইরেক্ট
         router.push('/dashboard/manage-blogs'); 

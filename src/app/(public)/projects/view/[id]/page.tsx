@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 
 
 
@@ -9,18 +10,18 @@ import { Button } from '@/components/ui/button';
 import Image from 'next/image';
 import Link from 'next/link';
 
-// API থেকে আসা ডেটার জন্য টাইপ
+
 interface Project {
     id: number;
     title: string;
     description: string;
-    projectUrl?: string; // GitHub Link
+    projectUrl?: string; 
     liveUrl?: string; 
     features: string[]; 
-    thumbnail: string[]; // একাধিক Image URLs
+    thumbnail: string[]; 
     user: { name: string }; 
     clickCount: number;
-    createdAt: string; // ডেট ডিসপ্লে করার জন্য
+    createdAt: string; 
 }
 
 // --- Helper Functions ---
@@ -29,20 +30,53 @@ const formatDateTime = (isoDate: string) => {
 };
 
 
+
+export async function generateStaticParams() {
+    try {
+
+        const res = await fetch('https://developerazmir.vercel.app/api/v1/project', {
+    
+        });
+        
+        if (!res.ok) {
+            console.error("Failed to fetch all Project IDs for generateStaticParams:", res.status);
+            return []; 
+        }
+
+        const result = await res.json();
+        
+        if (result?.data && Array.isArray(result.data)) {
+            return result.data.map((project: Project) => ({
+                blogId: project.id.toString(), 
+            }));
+        }
+    } catch (error) {
+        console.error("Error in generateStaticParams:", error);
+        return [];
+    }
+
+    return [];
+}
+
+
+
+
+
+
 export default async function ProjectDetailsPage({ params }: { params: { id: string } }) {
      const awaitedParams = await params;
     const projectId = awaitedParams.id;
-
-    console.log("projectId",projectId);
-    
 
     
     let project: Project;
 
     try {
-        const res = await fetch(`http://localhost:5000/api/v1/project/${projectId}`,
-            { cache: 'no-store' }
-           
+        const res = await fetch(`https://developerazmir.vercel.app/api/v1/project/${projectId}`, {
+             next: {
+                revalidate: 3600,
+            },
+        }
+             
         );
 
         if (res.status === 404) {

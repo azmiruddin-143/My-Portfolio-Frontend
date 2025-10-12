@@ -1,42 +1,31 @@
-import { redirect } from 'next/navigation';
+// import { redirect } from 'next/navigation';
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import { User, Mail, Shield, Zap } from 'lucide-react'; 
-import { cookies } from 'next/headers';
+// import { cookies } from 'next/headers';
 
-const AUTH_TOKEN_KEY = "token"; 
-const LOGIN_ROUTE = '/login'; 
+// const AUTH_TOKEN_KEY = "token"; 
+// const LOGIN_ROUTE = '/login'; 
 
 export default async function DashboardPage() {
     
-    const token = (await cookies()).get(AUTH_TOKEN_KEY)?.value;
-    if (!token) {
-        redirect(LOGIN_ROUTE);
-    }
+    // const token = (await cookies()).get(AUTH_TOKEN_KEY)?.value;
+    // if (!token) {
+    //     redirect(LOGIN_ROUTE);
+    // }
 
     let adminInfo = null;
     let dashboardData = null; 
 
     try {
-        const verifyResponse = await fetch('http://localhost:5000/api/v1/auth', {
+        const verifyResponse = await fetch('https://developerazmir.vercel.app/api/v1/auth', {
             cache: 'no-store',
             headers: {
-                // টোকেনটি Bearer স্কিমায় পাঠানো হচ্ছে
-                'Authorization': `Bearer ${token}`, 
+                // 'Authorization': `Bearer ${token}`, 
                 'Content-Type': 'application/json'
             }
         });
 
-        // ফিক্স ১: API Response-এর ok স্ট্যাটাস চেক করা
-        if (!verifyResponse.ok) {
-            // যদি সার্ভার 401/403 দেয়, তাহলে রিডাইরেক্ট করে দিন।
-            if (verifyResponse.status === 401 || verifyResponse.status === 403) {
-                redirect(LOGIN_ROUTE);
-            }
-            // অন্য error হলে, error পেজ দেখান।
-            return <div className='p-8 text-red-600'>API call failed with status: {verifyResponse.status}.</div>;
-        }
-
+    
         const result = await verifyResponse.json();
         // console.log(result); // ডিবাগিংয়ের জন্য
 

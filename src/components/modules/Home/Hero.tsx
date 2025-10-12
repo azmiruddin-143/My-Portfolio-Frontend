@@ -38,9 +38,9 @@ const Hero = () => {
           className="text-6xl md:text-8xl font-extrabold tracking-tight text-gray-900 dark:text-white"
           variants={itemVariants}
         >
-          Hi, I'm &nbsp;
+          Hi, I&apos;M  <br />
           <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-teal-400">
-            Azmir Uddin
+             Azmir Uddin
           </span>
         </motion.h1>
 

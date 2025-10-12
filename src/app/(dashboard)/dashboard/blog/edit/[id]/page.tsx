@@ -20,10 +20,10 @@ interface BlogData {
 export default async function BlogEditPage({ params }: BlogEditPageProps) {
     const blogId = params.id;
 
-    const res = await fetch(`http://localhost:5000/api/v1/blog/${blogId}`, {
+    const res = await fetch(`https://developerazmir.vercel.app/api/v1/blog/${blogId}`, {
         cache: 'no-store',
         headers: {
-            'Cookie': headers().get('cookie') || '',
+            'Cookie': (await headers()).get('cookie') || '',
         }
     });
 

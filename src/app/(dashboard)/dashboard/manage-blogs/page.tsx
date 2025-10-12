@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable react-hooks/exhaustive-deps */
 
 
@@ -68,7 +69,6 @@ const formatDateTimeBD = (isoDate: string | null | undefined) => {
 export default function ManageBlog() {
   const router = useRouter(); // ✅ useRouter হুকটি এখানে কল করা হলো
   const [data, setData] = useState<Blog[]>([]);
-  const [loading, setLoading] = useState(true);
   const [sorting, setSorting] = useState<SortingState>([]);
   const [globalFilter, setGlobalFilter] = useState(''); 
   
@@ -89,7 +89,7 @@ export default function ManageBlog() {
     setIsDialogOpen(false);
     
     try {
-      const response = await fetch(`http://localhost:5000/api/v1/blog/${blogToDelete.id}`, {
+      const response = await fetch(`https://developerazmir.vercel.app/api/v1/blog/${blogToDelete.id}`, {
         method: 'DELETE',
         credentials: "include", 
       });
@@ -113,16 +113,14 @@ export default function ManageBlog() {
   useEffect(() => {
     const fetchBlogs = async () => {
       try {
-        const response = await fetch(`http://localhost:5000/api/v1/blog`,
+        const response = await fetch(`https://developerazmir.vercel.app/api/v1/blog`,
            { credentials: "include" });
         if (!response.ok) throw new Error("Failed to fetch blogs.");
         const result = await response.json();
         setData(result.data || []); 
       } catch (error) {
         toast.error("Failed to load blog data.");
-      } finally {
-        setLoading(false);
-      }
+      } 
     };
     fetchBlogs();
   }, []);

@@ -2,7 +2,6 @@
 import { Button } from "@/components/ui/button";
 
 import Link from "next/link";
-import { Logo } from "./logo";
 import { NavMenu } from "./nav-menu";
 import { NavigationSheet } from "./navigation-sheet";
 
@@ -13,7 +12,7 @@ const Navbar = () => {
         {/* Logo with consistent padding */}
         <Link href="/" className="flex-shrink-0 ">
           {/* <Logo /> */}
-          <h1 className="text-2xl font-bold">My Portfolio</h1>
+          <h1 className="text-2xl font-bold">Azmir Uddin</h1>
         </Link>
 
         {/* Desktop Menu with consistent horizontal spacing */}

@@ -1,87 +1,32 @@
-// This file can be used as a page in the App Router (e.g., app/projects/create/page.tsx)
+
+
 'use client';
 
 import React, { useState } from 'react';
-import { useForm, useFieldArray } from "react-hook-form";
+import { useForm } from "react-hook-form"; // useFieldArray removed
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Loader2, PlusCircle, Trash2 } from "lucide-react";
-
-// --- Shadcn/ui Imports ---
-// IMPORTANT: Adjust import paths based on your project structure
-import { Button } from "@/components/ui/button";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { Button } from "@/components/ui/button";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import toast from 'react-hot-toast';
 
 // =================================================================
-// 1. Zod Validation Schema
+// 1. Zod Validation Schema (অপরিবর্তিত)
 // =================================================================
-// Matches your required payload structure: title, description, features, thumbnail, liveUrl, authorId
 const projectSchema = z.object({
   title: z.string().min(3, { message: "Project title must be at least 3 characters." }),
   description: z.string().min(20, { message: "Description must be at least 20 characters." }),
-  // Features and Thumbnail URLs are filtered to remove empty strings before validation/submission
-  features: z.array(z.string()).min(1, { message: "At least one feature is required." }),
-  thumbnail: z.array(z.string().url({ message: "Must be a valid URL" })).min(1, { message: "At least one thumbnail URL is required." }),
+  // features and thumbnail now handled by custom logic and validated in onSubmit
   liveUrl: z.string().url({ message: "Must be a valid URL" }).optional().or(z.literal('')),
   authorId: z.number().int({ message: "Author ID must be an integer." }),
 });
 
 type ProjectFormData = z.infer<typeof projectSchema>;
-
-// =================================================================
-// 2. Server Action (Full-Stack API Logic)
-// =================================================================
-
-// This function runs exclusively on the server, acting as your API handler.
-async function createProjectAction(data: ProjectFormData) {
-  "use client"
-  
-  try {
-    // Note: Zod validation runs twice (client-side in onSubmit, server-side here for security)
-    const validatedData = projectSchema.parse(data);
-
-
-    const response = await fetch("http://localhost:5000/api/v1/project", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-
-      },
-      body: JSON.stringify(validatedData),
-      cache: 'no-store',
-      credentials: "include"
-    });
-
-    const result = await response.json();
-
-    if (!response.ok || !result.success) {
-        // Throw error from backend response message
-        throw new Error(result.message || "Failed to create project on the backend.");
-    }
-    
-    console.log("sss");
-    // Optionally revalidate a path to show the new project on a listing page
-    // revalidatePath("/projects"); 
-
-    return {
-        success: true, 
-        message: result.message || "Project created successfully!", 
-        data: result.data
-    };
-
-  } catch (error) {
-    console.error("Project Creation Error:", error);
-    return { 
-        success: false, 
-        message: error instanceof Error ? error.message : "An unknown error occurred during submission." 
-    };
-  }
-}
 
 // =================================================================
 // 3. Main Form Component
@@ -90,63 +35,97 @@ async function createProjectAction(data: ProjectFormData) {
 const defaultValues: ProjectFormData = {
   title: "",
   description: "",
-  features: ["", ""], // Start with 2 empty fields
-  thumbnail: ["", ""], // Start with 2 empty fields
   liveUrl: "",
-  authorId: 3, // Default ID. In production, get this from an Auth context.
+  authorId: 3,
 };
 
 
-const CreateProject  =  () => {
+const CreateProject = () => {
 
-
- 
+  // 🔥🔥 useFieldArray এর বদলে useState ব্যবহার করা হলো 🔥🔥
+  const [featureInputs, setFeatureInputs] = useState(["", ""]); // Start with 2 empty fields
+  const [thumbnailInputs, setThumbnailInputs] = useState(["", ""]); // Start with 2 empty fields
   const [isSubmitting, setIsSubmitting] = useState(false);
-  
+
   const form = useForm<ProjectFormData>({
     resolver: zodResolver(projectSchema),
     defaultValues,
     mode: "onChange",
   });
 
-  // Hook to handle dynamic arrays for Features
-  const { 
-    fields: featureFields, 
-    append: appendFeature, 
-    remove: removeFeature 
-  } = useFieldArray({
-    control: form.control,
-    name: "features",
-  });
 
-  // Hook to handle dynamic arrays for Thumbnails
-  const { 
-    fields: thumbnailFields, 
-    append: appendThumbnail, 
-    remove: removeThumbnail 
-  } = useFieldArray({
-    control: form.control,
-    name: "thumbnail",
-  });
+  // --- Helper Functions for Local State Management ---
 
+  const handleInputChange = (
+    list: string[],
+    setList: React.Dispatch<React.SetStateAction<string[]>>,
+    index: number,
+    value: string
+  ) => {
+    const newList = [...list];
+    newList[index] = value;
+    setList(newList);
+  };
+
+  const handleAddField = (setList: React.Dispatch<React.SetStateAction<string[]>>) => {
+    setList(prev => [...prev, ""]);
+  };
+
+  const handleRemoveField = (
+    list: string[],
+    setList: React.Dispatch<React.SetStateAction<string[]>>,
+    index: number
+  ) => {
+    if (list.length > 1) { // অন্তত একটি ইনপুট রাখা হলো
+      setList(prev => prev.filter((_, i) => i !== index));
+    }
+  };
+
+  // --- API Submission ---
   async function onSubmit(data: ProjectFormData) {
     setIsSubmitting(true);
-    
-    // Filter out empty strings from dynamic arrays before sending to the server
+
+    // 1. Local State থেকে ডেটা ফিল্টার করা
+    const finalFeatures = featureInputs.map(f => f.trim()).filter(f => f.length > 0);
+    const finalThumbnails = thumbnailInputs.map(t => t.trim()).filter(t => t.length > 0);
+
+    // 2. ক্লায়েন্ট-সাইড ভ্যালিডেশন চেক (যেহেতু Zod স্কিমাতে অ্যারে নেই)
+    if (finalFeatures.length === 0 || finalThumbnails.length === 0) {
+      toast.error("Please add at least one feature and one image URL.");
+      setIsSubmitting(false);
+      return;
+    }
+
+    // 3. চূড়ান্ত Payload তৈরি
     const payload = {
       ...data,
-      features: data.features.filter(f => f.trim() !== ""),
-      thumbnail: data.thumbnail.filter(t => t.trim() !== ""),
+      features: finalFeatures,
+      thumbnail: finalThumbnails,
     };
 
-    const result = await createProjectAction(payload);
-    setIsSubmitting(false);
+    // ... (API কল লজিক)
+    try {
+      const response = await fetch("https://developerazmir.vercel.app/api/v1/project", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+        credentials: "include"
+      });
 
-    if (result.success) {
-      toast.success(result.message);
-      form.reset(defaultValues); // Reset form on success
-    } else {
-      toast.error(result.message);
+      const result = await response.json();
+
+      if (response.ok && result.success) {
+        toast.success(result.message || "Project created successfully!");
+        form.reset(defaultValues);
+        setFeatureInputs(["", ""]); // লোকাল স্টেট রিসেট
+        setThumbnailInputs(["", ""]); // লোকাল স্টেট রিসেট
+      } else {
+        throw new Error(result.message || "Failed to create project.");
+      }
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "An unknown error occurred.");
+    } finally {
+      setIsSubmitting(false);
     }
   }
 
@@ -159,83 +138,50 @@ const CreateProject  =  () => {
         </CardHeader>
         <CardContent>
           <Form {...form}>
+            {/* Note: useFieldArray এর ঝামেলা এড়াতে form ট্যাগের ভেতরেই সরাসরি ইনপুট ব্যবহার করা হয়েছে */}
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-              
-              {/* General Information */}
-              <div className="grid md:grid-cols-2 gap-6">
-                  <FormField
-                      control={form.control}
-                      name="title"
-                      render={({ field }) => (
-                          <FormItem>
-                              <FormLabel className="font-semibold">Project Title *</FormLabel>
-                              <FormControl>
-                                  <Input placeholder="e.g., Full-Stack E-commerce Application" {...field} />
-                              </FormControl>
-                              <FormMessage />
-                          </FormItem>
-                      )}
-                  />
 
-                  <FormField
-                      control={form.control}
-                      name="liveUrl"
-                      render={({ field }) => (
-                          <FormItem>
-                              <FormLabel className="font-semibold">Live URL (Optional)</FormLabel>
-                              <FormControl>
-                                  <Input placeholder="https://myproject.example.com" {...field} />
-                              </FormControl>
-                              <FormMessage />
-                          </FormItem>
-                      )}
-                  />
-              </div>
+              {/* General Information (useForm Fields) */}
+              {/* ... (title, liveUrl, description ফিল্ড আগের মতোই থাকবে) ... */}
 
-              <FormField
-                control={form.control}
-                name="description"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="font-semibold">Detailed Description *</FormLabel>
-                    <FormControl>
-                      <Textarea
-                        placeholder="Explain the project's purpose, technologies used, and key achievements."
-                        rows={5}
-                        className="resize-none"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+              {/* Title Field */}
+              <FormField control={form.control} name="title" render={({ field }) => (
+                <FormItem><FormLabel className="font-semibold">Project Title *</FormLabel><FormControl>
+                  <Input placeholder="e.g., Full-Stack E-commerce Application" {...field} /></FormControl><FormMessage /></FormItem>
+              )} />
+
+              {/* Live URL Field */}
+              <FormField control={form.control} name="liveUrl" render={({ field }) => (
+                <FormItem><FormLabel className="font-semibold">Live URL (Optional)</FormLabel><FormControl>
+                  <Input placeholder="https://myproject.example.com" {...field} /></FormControl><FormMessage /></FormItem>
+              )} />
+
+              {/* Description Field */}
+              <FormField control={form.control} name="description" render={({ field }) => (
+                <FormItem><FormLabel className="font-semibold">Detailed Description *</FormLabel><FormControl>
+                  <Textarea placeholder="Explain the project's purpose..." rows={5} className="resize-none" {...field} /></FormControl><FormMessage /></FormItem>
+              )} />
+
 
               <Separator />
-              
-              {/* Dynamic Features List */}
+
+              {/* 🔥🔥 DYNAMIC FEATURES LIST (useState Method) 🔥🔥 */}
               <div className="space-y-4">
                 <FormLabel className="text-xl font-bold block mb-4">✅ Key Features *</FormLabel>
-                {featureFields.map((item, index) => (
-                  <div key={item.id} className="flex items-center space-x-3">
-                    <FormField
-                      control={form.control}
-                      name={`features.${index}`}
-                      render={({ field }) => (
-                        <FormItem className="flex-grow">
-                          <FormControl>
-                            <Input placeholder={`Feature ${index + 1}: e.g., Real-time data synchronization`} {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
+                {featureInputs.map((feature, index) => (
+                  <div key={index} className="flex items-center space-x-3">
+                    <Input
+                      placeholder={`Feature ${index + 1}: e.g., Real-time data synchronization`}
+                      value={feature}
+                      onChange={(e) => handleInputChange(featureInputs, setFeatureInputs, index, e.target.value)}
+                      className="flex-grow"
                     />
                     <Button
                       type="button"
                       variant="outline"
                       size="icon"
-                      onClick={() => removeFeature(index)}
-                      disabled={featureFields.length <= 1} // Keep at least one for schema
+                      onClick={() => handleRemoveField(featureInputs, setFeatureInputs, index)}
+                      disabled={featureInputs.length <= 1}
                       className="shrink-0"
                     >
                       <Trash2 className="h-4 w-4 text-red-500" />
@@ -245,38 +191,36 @@ const CreateProject  =  () => {
                 <Button
                   type="button"
                   variant="secondary"
-                  onClick={() => appendFeature("")}
+                  onClick={() => handleAddField(setFeatureInputs)}
                   className="mt-2"
                 >
                   <PlusCircle className="mr-2 h-4 w-4" /> Add Another Feature
                 </Button>
+                {/* Manual Error Message for required array */}
+                {(featureInputs.filter(f => f.trim() !== "").length === 0 && !isSubmitting) && (
+                  <p className="text-sm font-medium text-red-500">At least one feature is required.</p>
+                )}
               </div>
 
               <Separator />
-              
-              {/* Dynamic Thumbnail URLs */}
+
+              {/* 🔥🔥 DYNAMIC THUMBNAIL URLS (useState Method) 🔥🔥 */}
               <div className="space-y-4">
                 <FormLabel className="text-xl font-bold block mb-4">🖼️ Thumbnail URLs (Screenshots) *</FormLabel>
-                {thumbnailFields.map((item, index) => (
-                  <div key={item.id} className="flex items-center space-x-3">
-                    <FormField
-                      control={form.control}
-                      name={`thumbnail.${index}`}
-                      render={({ field }) => (
-                        <FormItem className="flex-grow">
-                          <FormControl>
-                            <Input placeholder={`Image ${index + 1} URL: https://i.imgur.com/example${index + 1}.jpg`} {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
+                {thumbnailInputs.map((thumbnail, index) => (
+                  <div key={index} className="flex items-center space-x-3">
+                    <Input
+                      placeholder={`Image ${index + 1} URL: https://i.imgur.com/example${index + 1}.jpg`}
+                      value={thumbnail}
+                      onChange={(e) => handleInputChange(thumbnailInputs, setThumbnailInputs, index, e.target.value)}
+                      className="flex-grow"
                     />
                     <Button
                       type="button"
                       variant="outline"
                       size="icon"
-                      onClick={() => removeThumbnail(index)}
-                      disabled={thumbnailFields.length <= 1}
+                      onClick={() => handleRemoveField(thumbnailInputs, setThumbnailInputs, index)}
+                      disabled={thumbnailInputs.length <= 1}
                       className="shrink-0"
                     >
                       <Trash2 className="h-4 w-4 text-red-500" />
@@ -286,7 +230,7 @@ const CreateProject  =  () => {
                 <Button
                   type="button"
                   variant="secondary"
-                  onClick={() => appendThumbnail("")}
+                  onClick={() => handleAddField(setThumbnailInputs)}
                   className="mt-2"
                 >
                   <PlusCircle className="mr-2 h-4 w-4" /> Add Another Image
@@ -295,16 +239,15 @@ const CreateProject  =  () => {
 
               {/* Author ID (Hidden/Pre-filled) */}
               <FormField
-                  control={form.control}
-                  name="authorId"
-                  render={({ field }) => (
-                      <FormItem className="hidden">
-                          <FormControl>
-                              {/* Use type="number" and value={field.value} onChange={e => field.onChange(Number(e.target.value))} if not using defaultValues */}
-                              <Input type="number" {...field} />
-                          </FormControl>
-                      </FormItem>
-                  )}
+                control={form.control}
+                name="authorId"
+                render={({ field }) => (
+                  <FormItem className="hidden">
+                    <FormControl>
+                      <Input type="number" {...field} />
+                    </FormControl>
+                  </FormItem>
+                )}
               />
 
               {/* Submit Button */}
@@ -318,7 +261,7 @@ const CreateProject  =  () => {
                   "Save Project"
                 )}
               </Button>
-              
+
             </form>
           </Form>
         </CardContent>
@@ -328,3 +271,5 @@ const CreateProject  =  () => {
 };
 
 export default CreateProject;
+
+

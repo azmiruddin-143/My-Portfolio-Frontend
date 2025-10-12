@@ -46,8 +46,10 @@ const ProjectsPage = async () => {
     
     // 1. API কল (Server-side fetching)
     try {
-        const res = await fetch("http://localhost:5000/api/v1/project", {
-            cache: "no-store"
+        const res = await fetch("https://developerazmir.vercel.app/api/v1/project", {
+              next: { 
+            revalidate: 60 
+        }
         });
         
         if (!res.ok) {

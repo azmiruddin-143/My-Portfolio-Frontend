@@ -37,7 +37,7 @@ export default function BlogGridClient({ blogs }: { blogs: Blog[] }) {
     // (এখানে আপনি চাইলে client-side state এবং সার্চ ফিল্টারিং লজিক যোগ করতে পারেন)
 
     return (
-        <section className="py-8 bg-gray-50 ">
+        <section className="py-30 bg-gray-50 ">
             <div className="max-w-7xl mx-auto px-6 md:px-8">
                 
                 {/* Title Section */}
@@ -47,7 +47,7 @@ export default function BlogGridClient({ blogs }: { blogs: Blog[] }) {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.5 }}
                 >
-                    <span className="text-red-600 dark:text-red-400">Latest</span> Blog Posts
+                    <span className="text-red-600  dark:text-red-400">All</span> Blog Posts
                 </motion.h1>
                 
                 {/* Grid Container with Animation */}

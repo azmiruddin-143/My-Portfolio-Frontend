@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { notFound } from 'next/navigation';
 import { headers } from 'next/headers';
 import Image from 'next/image';
@@ -22,28 +23,70 @@ const formatDateTime = (isoDate: string) => {
     return new Date(isoDate).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
 };
 
-// আনুমানিক রিডিং টাইম গণনা
+
 const formatReadingTime = (content: string) => {
     const time = Math.ceil(content.split(/\s+/).length / 200);
     return `${time} min read`;
 };
 
 
+
+export async function generateStaticParams() {
+    try {
+
+        const res = await fetch('https://developerazmir.vercel.app/api/v1/blog', {
+    
+        });
+        
+        if (!res.ok) {
+            console.error("Failed to fetch all blog IDs for generateStaticParams:", res.status);
+            return []; 
+        }
+
+        const result = await res.json();
+        
+        if (result?.data && Array.isArray(result.data)) {
+            return result.data.map((blog: Blog) => ({
+                blogId: blog.id.toString(), 
+            }));
+        }
+    } catch (error) {
+        console.error("Error in generateStaticParams:", error);
+        return [];
+    }
+
+    return [];
+}
+
+
+
+
+
+
+
+
+
+
 // ----------------------------------------------------------------
 // Server Component: Data Fetching and Layout
 // ----------------------------------------------------------------
-export default async function BlogSinglePage({ params }: { params: { blogid: string } }) {
+export default async function BlogSinglePage({ params }: { params: {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    blogId: any; blogid: string 
+} }) {
 
     // 🔥 রুট প্যারামিটার থেকে ID নেওয়া এবং await করা হলো
     const awaitedParams = await params;
     const blogId = awaitedParams.blogId;
 
     let blog: Blog;
-    const API_URL = `http://localhost:5000/api/v1/blog/${blogId}`;
+
 
     try {
-        const res = await fetch(API_URL, {
-            cache: 'no-store',
+        const res = await fetch(`https://developerazmir.vercel.app/api/v1/blog/${blogId}`, {
+          next: {
+                revalidate: 3600,
+            },
 
         });
 

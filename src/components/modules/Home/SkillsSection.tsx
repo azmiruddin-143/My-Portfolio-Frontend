@@ -29,7 +29,11 @@ const SkillsSection = () => {
 
   const itemVariants = {
     hidden: { opacity: 0, y: 50 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: "easeOut" } },
+    visible: { opacity: 1, y: 0, transition:
+       // eslint-disable-next-line @typescript-eslint/no-explicit-any
+       { duration: 0.5, ease: "easeOut" as any }
+      
+      },
   };
 
   return (

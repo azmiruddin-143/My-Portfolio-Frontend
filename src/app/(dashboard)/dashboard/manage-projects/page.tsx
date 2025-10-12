@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 
 import React, { useState, useEffect, useMemo } from 'react';
@@ -14,7 +16,7 @@ import {
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { ArrowUpDown, Eye, Edit, Trash2, Search, Zap } from "lucide-react";
+import { ArrowUpDown,  Edit, Trash2, Search, Zap } from "lucide-react";
 import toast from 'react-hot-toast'; // Using react-hot-toast as per your example
 import { useRouter } from 'next/navigation';
 import { Badge } from "@/components/ui/badge"; // Assuming Badge component exists
@@ -89,7 +91,7 @@ export default function ManageProjects() {
         
         try {
             // !!! UPDATE URL to match your Project API endpoint !!!
-            const response = await fetch(`http://localhost:5000/api/v1/project/${projectToDelete.id}`, {
+            const response = await fetch(`https://developerazmir.vercel.app/api/v1/project/${projectToDelete.id}`, {
                 method: 'DELETE',
                 credentials: "include", 
             });
@@ -114,7 +116,7 @@ export default function ManageProjects() {
         const fetchProjects = async () => {
             try {
                 // !!! UPDATE URL to match your Project API endpoint !!!
-                const response = await fetch(`http://localhost:5000/api/v1/project`,
+                const response = await fetch(`https://developerazmir.vercel.app/api/v1/project`,
                     { credentials: "include" });
                 if (!response.ok) throw new Error("Failed to fetch projects.");
                 const result = await response.json();

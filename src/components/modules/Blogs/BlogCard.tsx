@@ -87,7 +87,7 @@
 import React from 'react';
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, Clock, User, Calendar } from "lucide-react";
+import { ArrowRight, User, Calendar } from "lucide-react";
 import { motion } from 'framer-motion';
 
 // আপনার Blog ডেটা টাইপ
@@ -114,8 +114,7 @@ export default function BlogCard({ blog }: { blog: Blog }) {
     : blog.content;
     
   // 🔥 ইমেজ URL ফিক্স
-  const imageUrl = blog.image || 'https://placehold.co/800x450/374151/FFFFFF/png?text=BLOG+POST';
-
+  const imageUrl = blog?.image as string
   // Framer Motion Variants for Hover Effect
   const cardVariants = {
     rest: { scale: 1, transition: { duration: 0.3 } },
@@ -142,9 +141,10 @@ export default function BlogCard({ blog }: { blog: Blog }) {
             <Image
                 src={imageUrl}
                 alt={blog.title}
-                fill={true} 
+                fill={true}
+                loading="lazy"
                 sizes="(max-width: 768px) 100vw, 33vw"
-                style={{ objectFit: 'cover' }}
+                style={{objectFit:'cover' }}
                 className="transition-transform duration-500 group-hover:scale-110" 
             />
             
@@ -160,19 +160,21 @@ export default function BlogCard({ blog }: { blog: Blog }) {
             <div className="absolute inset-0 p-4 flex flex-col justify-between z-10">
                 
                 {/* Top: Reading Time Badge */}
-                <span className="text-xs font-semibold px-3 py-1 bg-red-600/80 text-white rounded-full self-start backdrop-blur-sm">
+                {/* <span className="text-xs font-semibold px-3 py-1 bg-red-600/80 text-white rounded-full self-start backdrop-blur-sm">
                     {formatReadingTime(blog.content)}
-                </span>
+                </span> */}
 
                 {/* Bottom: Title */}
-                <h3 className="text-2xl font-extrabold text-white drop-shadow-lg leading-snug line-clamp-2">
-                    {blog.title}
-                </h3>
+                
             </div>
         </Link>
 
         {/* 2. কন্টেন্ট বডি (Details) */}
         <div className="p-5 flex flex-col justify-between flex-grow">
+
+            <h3 className="text-2xl font-extrabold text-black py-2 drop-shadow-lg leading-snug line-clamp-2">
+                    {blog.title}
+                </h3>
             
             <div className="space-y-3 flex-grow">
                 {/* ডেসক্রিপশন */}
@@ -189,10 +191,10 @@ export default function BlogCard({ blog }: { blog: Blog }) {
                         <User className="h-3 w-3 text-indigo-500" />
                         By: {blog.author?.name}
                     </span>
-                    <span className="flex items-center gap-1">
+                    {/* <span className="flex items-center gap-1">
                         <Calendar className="h-3 w-3 text-red-500" />
                         {new Date(blog.createdAt).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}
-                    </span>
+                    </span> */}
                 </div>
                 
                 {/* Read More বাটন */}
