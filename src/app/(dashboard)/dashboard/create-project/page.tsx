@@ -14,6 +14,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import toast from 'react-hot-toast';
+import { useRouter } from 'next/navigation';
 
 // =================================================================
 // 1. Zod Validation Schema (অপরিবর্তিত)
@@ -22,8 +23,12 @@ const projectSchema = z.object({
   title: z.string().min(3, { message: "Project title must be at least 3 characters." }),
   description: z.string().min(20, { message: "Description must be at least 20 characters." }),
   // features and thumbnail now handled by custom logic and validated in onSubmit
-  liveUrl: z.string().url({ message: "Must be a valid URL" }).optional().or(z.literal('')),
+  liveUrl: z.string().url({ message: "A valid image URL is required." }),
+  projectUrl: z.string().url({ message: "A valid image URL is required." }),
+
+
   authorId: z.number().int({ message: "Author ID must be an integer." }),
+
 });
 
 type ProjectFormData = z.infer<typeof projectSchema>;
@@ -36,15 +41,16 @@ const defaultValues: ProjectFormData = {
   title: "",
   description: "",
   liveUrl: "",
+  projectUrl: "",
   authorId: 3,
 };
 
 
 const CreateProject = () => {
-
+  const router = useRouter();
   // 🔥🔥 useFieldArray এর বদলে useState ব্যবহার করা হলো 🔥🔥
   const [featureInputs, setFeatureInputs] = useState(["", ""]); // Start with 2 empty fields
-  const [thumbnailInputs, setThumbnailInputs] = useState(["", ""]); // Start with 2 empty fields
+  const [thumbnailInputs, setThumbnailInputs] = useState([""]); // Start with 2 empty fields
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const form = useForm<ProjectFormData>({
@@ -97,13 +103,16 @@ const CreateProject = () => {
     }
 
     // 3. চূড়ান্ত Payload তৈরি
+
+
     const payload = {
       ...data,
       features: finalFeatures,
       thumbnail: finalThumbnails,
     };
 
-    // ... (API কল লজিক)
+    // console.log(payload);
+    // // ... (API কল লজিক)
     try {
       const response = await fetch("https://developerazmir.vercel.app/api/v1/project", {
         method: "POST",
@@ -115,7 +124,8 @@ const CreateProject = () => {
       const result = await response.json();
 
       if (response.ok && result.success) {
-        toast.success(result.message || "Project created successfully!");
+        toast.success("Project created successfully!");
+        router.push('/dashboard/manage-projects');
         form.reset(defaultValues);
         setFeatureInputs(["", ""]); // লোকাল স্টেট রিসেট
         setThumbnailInputs(["", ""]); // লোকাল স্টেট রিসেট
@@ -130,8 +140,8 @@ const CreateProject = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 p-4 md:p-8">
-      <Card className="w-full max-w-4xl mx-auto shadow-xl">
+    <div className="min-h-screen dark:bg-gray-900 p-4 md:p-8">
+      <Card className=" shadow-xl">
         <CardHeader>
           <CardTitle className="text-3xl font-bold text-gray-800 dark:text-white">Create New Project</CardTitle>
           <CardDescription>Fill out the details to showcase your work. All fields marked with * are required.</CardDescription>
@@ -141,20 +151,26 @@ const CreateProject = () => {
             {/* Note: useFieldArray এর ঝামেলা এড়াতে form ট্যাগের ভেতরেই সরাসরি ইনপুট ব্যবহার করা হয়েছে */}
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
 
-              {/* General Information (useForm Fields) */}
-              {/* ... (title, liveUrl, description ফিল্ড আগের মতোই থাকবে) ... */}
 
-              {/* Title Field */}
               <FormField control={form.control} name="title" render={({ field }) => (
                 <FormItem><FormLabel className="font-semibold">Project Title *</FormLabel><FormControl>
                   <Input placeholder="e.g., Full-Stack E-commerce Application" {...field} /></FormControl><FormMessage /></FormItem>
               )} />
 
-              {/* Live URL Field */}
-              <FormField control={form.control} name="liveUrl" render={({ field }) => (
-                <FormItem><FormLabel className="font-semibold">Live URL (Optional)</FormLabel><FormControl>
-                  <Input placeholder="https://myproject.example.com" {...field} /></FormControl><FormMessage /></FormItem>
-              )} />
+            
+                {/* Live URL Field */}
+                <FormField control={form.control} name="liveUrl" render={({ field }) => (
+                  <FormItem><FormLabel className="font-semibold">Live URL</FormLabel><FormControl>
+                    <Input placeholder="https://myproject.example.com" {...field} /></FormControl><FormMessage /></FormItem>
+                )} />
+
+
+                {/* project URL Field */}
+                <FormField control={form.control} name="projectUrl" render={({ field }) => (
+                  <FormItem><FormLabel className="font-semibold">Project URL </FormLabel><FormControl>
+                    <Input  placeholder="https://myproject.example.com" {...field} /></FormControl><FormMessage /></FormItem>
+                )} />
+              
 
               {/* Description Field */}
               <FormField control={form.control} name="description" render={({ field }) => (
@@ -225,6 +241,7 @@ const CreateProject = () => {
                     >
                       <Trash2 className="h-4 w-4 text-red-500" />
                     </Button>
+
                   </div>
                 ))}
                 <Button
@@ -251,7 +268,7 @@ const CreateProject = () => {
               />
 
               {/* Submit Button */}
-              <Button type="submit" className="w-full h-12 text-lg" disabled={isSubmitting}>
+              <Button type="submit" className="w-full h-12 text-lg bg-indigo-600 hover:bg-indigo-700" disabled={isSubmitting}>
                 {isSubmitting ? (
                   <>
                     <Loader2 className="mr-2 h-5 w-5 animate-spin" />

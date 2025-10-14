@@ -1,3 +1,4 @@
+import DashboardAuthWrapper from "@/components/auth/DashboardAuthWrapper";
 import Sidebar from "@/components/shared/Sidebar";
 
 export default function DashboardLayout({
@@ -6,9 +7,11 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <main className="min-h-dvh flex gap-4">
+    <main className="min-h-dvh flex sm:gap-2">
       <Sidebar />
-      {children}
+      <DashboardAuthWrapper>
+            {children}
+        </DashboardAuthWrapper>
     </main>
   );
 }

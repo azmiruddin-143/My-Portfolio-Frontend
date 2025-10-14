@@ -14,7 +14,7 @@ export const NavigationSheet = () => {
       <SheetContent>
         {/* <Logo />
          */}
-         Logo
+         <h1 className="p-2 text-xl font-bold">Azmir Uddin</h1>
         <NavMenu orientation="vertical" className="mt-12" />
       </SheetContent>
     </Sheet>

@@ -3,6 +3,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button'; // shadcn Button
+import Link from 'next/link';
 
 
 const Hero = () => {
@@ -35,7 +36,7 @@ const Hero = () => {
       >
         {/* Main Title - Animated */}
         <motion.h1 
-          className="text-6xl md:text-8xl font-extrabold tracking-tight text-gray-900 dark:text-white"
+          className="text-6xl mt-10 sm:mt-2 md:text-8xl font-extrabold tracking-tight text-gray-900 dark:text-white"
           variants={itemVariants}
         >
           Hi, I&apos;M  <br />
@@ -58,17 +59,18 @@ const Hero = () => {
           variants={itemVariants}
         >
           <Button 
-            className="h-12 px-8 text-lg bg-blue-600 hover:bg-blue-700 shadow-lg"
-            onClick={() => window.location.href='/projects'} // Assuming /projects is your management route for now
+            className="h-12 px-8 text-lg cursor-pointer bg-blue-600 hover:bg-blue-700 shadow-lg"
           >
-            Explore My Work
+            
+            <Link href="/projects">Explore My Work</Link>
           </Button>
           <Button 
             variant="outline" 
-            className="h-12 px-8 text-lg border-gray-400 dark:border-gray-600 dark:hover:bg-gray-800"
-            onClick={() => window.location.href='/contact'}
+            className="h-12 cursor-pointer px-8 text-lg border-gray-400 dark:border-gray-600 dark:hover:bg-gray-800"
+           
           >
-            Get In Touch
+            
+            <Link href="/contact">Get In Touch</Link>
           </Button>
         </motion.div>
       </motion.div>

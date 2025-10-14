@@ -83,7 +83,7 @@ export default function Footer() {
               Azmir Uddin
             </h2>
             <p className="text-sm text-indigo-300">
-              Building next-generation digital experiences with full-stack proficiency. Let's create something meaningful.
+              Building next-generation digital experiences with full-stack proficiency. Let&apos;s create something meaningful.
             </p>
           </div>
 

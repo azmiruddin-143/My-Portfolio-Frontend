@@ -8,33 +8,21 @@ import Link from 'next/link';
 import myphoto from "../.././../assets/azmir-uddin.png";
 const AboutMeSection = () => {
   const fadeInVariants: Variants = {
-  hidden: {
-    opacity: 0,
-    x: -50,
-  },
-  visible: {
-    opacity: 1,
-    x: 0,
-    transition: {
-      duration: 0.8,
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      ease: "easeInOut" as any, 
-      delay: 0.3,
+ hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.08,
+      },
     },
-  },
 };
  const textVariants = {
-  hidden: { opacity: 0, x: 50 },
-  visible: {
-    opacity: 1,
-    x: 0,
-    transition: {
-      duration: 0.8,
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      ease: "easeOut" as any,
-      delay: 0.4,
-    },
-  },
+  hidden: { opacity: 0, y: 50 },
+    visible: { opacity: 1, y: 0, transition:
+       // eslint-disable-next-line @typescript-eslint/no-explicit-any
+       { duration: 0.5, ease: "easeOut" as any }
+      
+      },
 };
 
   return (

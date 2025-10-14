@@ -55,10 +55,8 @@ export default function BlogForm({ initialData, type, blogId }: BlogFormProps) {
     defaultValues: {
       title: initialData.title || "",
       content: initialData.content || "", 
-      // 🔥 image ফিল্ডের মান সেট করা হচ্ছে
       image: initialData.image || "", 
     },
-    // reValidateMode: "onChange" অথবা "onBlur" ব্যবহার করতে পারেন
   });
 
 
@@ -106,11 +104,11 @@ export default function BlogForm({ initialData, type, blogId }: BlogFormProps) {
 
   return (
     <div className="min-h-screen py-10">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="px-4 sm:px-6 lg:px-8">
         
         <h1 className="text-4xl font-extrabold mb-8 text-center text-gray-800 dark:text-white">
-          {type === 'edit' ? `Edit Post: ${initialData.title.substring(0, 30)}...` : 'Create New Blog Post'}
-        </h1>
+          {type === 'edit' ? `Edit Blog Post` : 'Create New Blog Post'}
+        </h1> 
 
         <Form {...form}>
           <form
@@ -124,7 +122,7 @@ export default function BlogForm({ initialData, type, blogId }: BlogFormProps) {
               name="title"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-xl font-bold">Post Title *</FormLabel>
+                  <FormLabel className="text-xl font-bold">Blog Title *</FormLabel>
                   <FormControl>
                     <Input 
                         placeholder="Write a compelling title for your blog post" 
@@ -189,7 +187,7 @@ export default function BlogForm({ initialData, type, blogId }: BlogFormProps) {
                       Saving Changes...
                   </>
               ) : (
-                  "Update Post"
+                  "Update Blog"
               )}
             </Button>
           </form>

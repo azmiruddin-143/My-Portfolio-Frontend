@@ -16,11 +16,11 @@ import {
 } from "@/components/ui/form";
 import Image from "next/image";
 import { Input } from "@/components/ui/input";
-import { Eye, EyeOff } from "lucide-react"; 
-import { zodResolver } from "@hookform/resolvers/zod"; 
-import * as z from "zod"; 
-import toast from "react-hot-toast"; 
-import { useRouter } from "next/navigation"; 
+import { Eye, EyeOff } from "lucide-react";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
+import toast from "react-hot-toast";
+import { useRouter } from "next/navigation";
 
 // --- A. ZOD SCHEMA তৈরি (VALIDATION) ---
 const LoginFormSchema = z.object({
@@ -33,63 +33,67 @@ type LoginFormValues = z.infer<typeof LoginFormSchema>;
 export default function LoginForm() {
   const [showPassword, setShowPassword] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const router = useRouter(); 
-  
+  const router = useRouter();
+
   const form = useForm<LoginFormValues>({
-    resolver: zodResolver(LoginFormSchema), 
+    resolver: zodResolver(LoginFormSchema),
     defaultValues: {
       email: "",
       password: "",
     },
   });
 
-const onSubmit = async (values: LoginFormValues) => {
+  const onSubmit = async (values: LoginFormValues) => {
     setIsSubmitting(true);
     // ✅ আপনার লগইন API এর URL
-    const API_URL = "https://developerazmir.vercel.app/api/v1/auth/login"; 
+    const API_URL = "https://developerazmir.vercel.app/api/v1/auth/login";
 
     try {
-        const response = await fetch(API_URL, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(values),
-            credentials: "include", 
-        });
+      const response = await fetch(API_URL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(values),
+        credentials: "include",
+      });
 
-        const data = await response.json();
-        
-        if (!response.ok || data.success === false) { 
-            const errorMessage = 
-                data.message || 
-                (response.status === 401 ? "Invalid email or password. Please check your credentials." : "Login failed due to a server error.");
-            
-            toast.error(errorMessage);
-            return;
-        }
+      const data = await response.json();
 
-        // ----------------------------------------------------
-        // ✅ সফলতার লজিক
-        // ----------------------------------------------------
-        
-        if (data.success && data.message === "User Login Successfully") { 
-            toast.success("Login successful! Redirecting to Dashboard.");
-            
-            // ✅ লগইন সফল হওয়ায়, এখন ড্যাশবোর্ড রুটে রিডাইরেক্ট করা হচ্ছে
-            // Middleware কুকি চেক করে অ্যাক্সেস দেবে
-            router.push('/dashboard'); 
-            form.reset();
-        } else {
-            toast.error("An unexpected response received from the server.");
-        }
+      const myLoginData = data?.user
+      localStorage.setItem("adminData", JSON.stringify(myLoginData));
+      console.log("login Data", data?.user);
+
+      if (!response.ok || data.success === false) {
+        const errorMessage =
+          data.message ||
+          (response.status === 401 ? "Invalid email or password. Please check your credentials." : "Login failed due to a server error.");
+
+        toast.error(errorMessage);
+        return;
+      }
+
+      // ----------------------------------------------------
+      // ✅ সফলতার লজিক
+      // ----------------------------------------------------
+
+      if (data.success && data.message === "User Login Successfully") {
+        toast.success("Login successful! Redirecting to Dashboard.");
+
+        // ✅ লগইন সফল হওয়ায়, এখন ড্যাশবোর্ড রুটে রিডাইরেক্ট করা হচ্ছে
+        // Middleware কুকি চেক করে অ্যাক্সেস দেবে
+        router.push('/dashboard');
+        form.reset();
+      } else {
+        toast.error("An unexpected response received from the server.");
+      }
 
     } catch (error) {
-        toast.error("Network error. Could not connect to the server.");
+      toast.error("Network error. Could not connect to the server.");
     } finally {
-        setIsSubmitting(false);
+      setIsSubmitting(false);
     }
-};
+  };
 
   // Social Login এখন অকেজো (Not Implemented)
   const handleSocialLogin = (provider: "google" | "github") => {
@@ -169,7 +173,7 @@ const onSubmit = async (values: LoginFormValues) => {
             </div>
           </form>
         </Form>
-        
+
         {/* Social Login Buttons */}
         <div className="flex flex-col gap-3 mt-4">
           <Button
@@ -202,7 +206,7 @@ const onSubmit = async (values: LoginFormValues) => {
             Login with Google
           </Button>
         </div>
-        
+
         {/* Register Link */}
         <p className="text-center text-sm text-gray-500 mt-4">
           Don’t have an account?{" "}

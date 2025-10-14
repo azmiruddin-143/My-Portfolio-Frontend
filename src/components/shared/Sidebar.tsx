@@ -12,12 +12,12 @@ import toast from 'react-hot-toast'; // Toast নোটিফিকেশনে�
 
 const navItems = [
     { href: "/", label: "Home (Public)", icon: Home },
-    { href: "/dashboard/create-blog", label: "Create Blog", icon: PlusCircle },
+    // { href: "/dashboard/create-blog", label: "Create Blog", icon: PlusCircle },
     { href: "/dashboard/manage-blogs", label: "Manage Blog", icon: Layers },
     { href: "/dashboard/manage-projects", label: "Manage Projects", icon: Layers }, // Updated route to /projects
-    { href: "/dashboard/settings", label: "Settings", icon: Settings },
+    // { href: "/dashboard/settings", label: "Settings", icon: Settings },
 ];
-
+const LOGIN_ROUTE = '/login'; 
 // -------------------------------------------------------------------
 // Logout Handler Function
 // -------------------------------------------------------------------
@@ -28,6 +28,7 @@ interface SidebarContentProps {
 }
 
 const SidebarContent = ({ handleLogout, isLoggingOut }: SidebarContentProps) => (
+    
     <>
         {/* Top Logo / App Name Section */}
         <div className="flex items-center h-16 px-4 border-b border-gray-700 bg-gray-900 text-white">
@@ -79,21 +80,24 @@ export default function Sidebar() {
 
     const handleLogout = async () => {
         setIsLoggingOut(true);
-        // !!! আপনার ব্যাকএন্ডের সঠিক লগআউট API URL দিন !!!
         const API_URL = "https://developerazmir.vercel.app/api/v1/auth/logout"; 
 
         try {
-            // POST request পাঠানো হচ্ছে। credentials: "include" এর মাধ্যমে কুকি পাঠানো হবে।
             const response = await fetch(API_URL, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                credentials: "include", 
-                cache: 'no-store'
+                 cache: 'no-store',
+                credentials: "include"
+               
             });
+ 
+            console.log("ss",response);
+             
 
-            // ধরে নেওয়া হচ্ছে ব্যাকএন্ড কুকি ডিলিট করে দেবে এবং 200/204 স্ট্যাটাস দেবে
             if (response.ok || response.status === 204) {
+                localStorage.removeItem("adminData");
                 toast.success("Logged out successfully!");
+                router.push(LOGIN_ROUTE);
             } else {
                 const data = await response.json();
                 toast.error(data.message || "Logout failed on server side.");
@@ -103,17 +107,16 @@ export default function Sidebar() {
             toast.error("Network error during logout.");
         } finally {
             setIsLoggingOut(false);
-            // API কলের সফলতা বা ব্যর্থতা নির্বিশেষে, লগইন পেজে রিডাইরেক্ট করে দিন
-            router.push('/login');
+         
         }
     };
 
-    // Mobile sheet state (Optional: to close the sheet after logout)
+
     const [isSheetOpen, setIsSheetOpen] = useState(false);
 
     return (
         <>
-            {/* 1. Desktop Sidebar (Large screens only) */}
+
             <aside className="hidden md:flex w-64 flex-col border-r border-gray-700 bg-gray-900 shadow-xl">
                 <SidebarContent handleLogout={handleLogout} isLoggingOut={isLoggingOut} />
             </aside>
@@ -121,7 +124,7 @@ export default function Sidebar() {
             {/* 2. Mobile Drawer/Overlay (Small screens only) */}
             <div className="md:hidden">
                 <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
-                    <SheetTrigger className='left-2.5 relative top-5' asChild>
+                    <SheetTrigger className='left-0  absolute top-3' asChild>
                         <Button variant="ghost" size="icon">
                             <Menu className='h-6 w-6' />
                         </Button>

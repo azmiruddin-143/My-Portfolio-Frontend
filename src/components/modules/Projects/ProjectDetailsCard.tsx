@@ -122,7 +122,7 @@ export default function ProjectDetailsCard({ project }: { project: Project }) {
                 </div>
 
                 {/* অ্যাকশন বাটনস */}
-                <div className="mt-auto pt-4 border-t border-gray-100 dark:border-gray-700 flex gap-3">
+                <div className="mt-auto pt-4 border-t  border-gray-100 dark:border-gray-700 flex gap-3">
 
                     {/* View Details Button */}
                     <Button asChild className="flex-1 bg-blue-600 hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-800">
@@ -133,14 +133,14 @@ export default function ProjectDetailsCard({ project }: { project: Project }) {
 
                     
                     {project.projectUrl && (
-                        <Button asChild variant="outline" className="w-1/3 text-gray-800 dark:text-white border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700">
+                        <Button asChild variant="outline" className=" text-gray-800 dark:text-white border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700">
                             <Link href={project?.projectUrl} target="_blank">
                                  <Github className="h-4 w-4" /> 
                             </Link>
                         </Button>
                     )}
                     {project.liveUrl && (
-                        <Button asChild variant="outline" className="w-1/3 text-gray-800 dark:text-white border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700">
+                        <Button asChild variant="outline" className=" text-gray-800 dark:text-white border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700">
                             <Link href={project.liveUrl} target="_blank">
                                 <ExternalLink className="h-4 w-4" />
                             </Link>

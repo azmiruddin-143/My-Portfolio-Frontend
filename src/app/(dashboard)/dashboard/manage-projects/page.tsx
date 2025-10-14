@@ -16,7 +16,7 @@ import {
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { ArrowUpDown,  Edit, Trash2, Search, Zap } from "lucide-react";
+import { ArrowUpDown,  Edit, Trash2, Search, Zap, Eye } from "lucide-react";
 import toast from 'react-hot-toast'; // Using react-hot-toast as per your example
 import { useRouter } from 'next/navigation';
 import { Badge } from "@/components/ui/badge"; // Assuming Badge component exists
@@ -29,6 +29,7 @@ interface Project {
     features: string[]; // Array of strings
     thumbnail: string[]; // Array of string URLs
     liveUrl: string;
+    projectUrl: string;
     authorId: number;
     createdAt: string;
     updatedAt: string;
@@ -45,6 +46,7 @@ import {
     AlertDialogHeader,
     AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import ProjectTableSkeleton from '@/components/skeletons/ProjectTableSkeleton';
 
 
 // --- Helper for Date Formatting (e.g., standard format) ---
@@ -166,6 +168,20 @@ export default function ManageProjects() {
             ),
         },
         {
+            accessorKey: "projectUrl",
+            header: "Project URL",
+            cell: ({ row }) => (
+                <a 
+                    href={row.original?.projectUrl} 
+                    target="_blank" 
+                    rel="noopener noreferrer" 
+                    className="text-blue-500 hover:text-blue-600 text-sm font-medium transition-colors"
+                >
+                    {row.original?.projectUrl ? new URL(row.original?.projectUrl).hostname : 'N/A'}
+                </a>
+            ),
+        },
+        {
             accessorKey: "features",
             header: "Features",
             cell: ({ row }) => {
@@ -182,13 +198,12 @@ export default function ManageProjects() {
             header: "Author ID",
             cell: ({ row }) => <div className="text-gray-600 text-center">{row.getValue("authorId")}</div>,
         },
-        {
-            accessorKey: "createdAt",
-            header: "Created On",
-            cell: ({ row }) => {
-                const isoDate: string = row.original.createdAt; 
-                return <div className="text-sm text-gray-500 whitespace-nowrap">{formatDateTime(isoDate)}</div>;
-            },
+          {
+            accessorKey: "CreateAt By",
+            header: "Created By",
+            cell: ({ row }) => (
+              <h1>Azmir Uddin (Owner)</h1>
+            ),
         },
         // Action Buttons (View, Edit, Delete)
         {
@@ -206,19 +221,19 @@ export default function ManageProjects() {
                          router.push(`/dashboard/project/edit/${project.id}`);
                     } else if (action === 'View') {
                         // Navigate to the dynamic view page (e.g., project detail)
-                        router.push(`/projects/${project.id}`); 
+                        router.push(`/projects/view/${project.id}`); 
                     }
                 };
 
                 return (
-                    <div className="flex space-x-1">
-                        {/* <Button variant="ghost" size="icon" onClick={() => handleAction('View')} title="View Project">
+                    <div className="flex space-x-1 cursor-pointer">
+                        <Button className='cursor-pointer' variant="ghost" size="icon" onClick={() => handleAction('View')} title="View Project">
                             <Eye className="h-4 w-4 text-blue-500" />
-                        </Button> */}
-                        <Button variant="ghost" size="icon" onClick={() => handleAction('Edit')} title="Edit Project">
+                        </Button>
+                        <Button className='cursor-pointer' variant="ghost" size="icon" onClick={() => handleAction('Edit')} title="Edit Project">
                             <Edit className="h-4 w-4 text-yellow-500" />
                         </Button>
-                        <Button variant="ghost" size="icon" onClick={() => handleAction('Delete')} title="Delete Project">
+                        <Button className='cursor-pointer' variant="ghost" size="icon" onClick={() => handleAction('Delete')} title="Delete Project">
                             <Trash2 className="h-4 w-4 text-red-500" />
                         </Button>
                     </div>
@@ -248,7 +263,7 @@ export default function ManageProjects() {
 
     return (
         <div className="container mx-auto py-10 px-4">
-            <h1 className="text-4xl font-extrabold mb-8 text-gray-900 dark:text-white">Project Management Dashboard</h1>
+            <h1 className="text-4xl font-extrabold mb-8 text-gray-900 dark:text-white">Project Management</h1>
 
             {/* --- D. CONTROL BAR: Search Input and Actions --- */}
             <div className="flex flex-col md:flex-row gap-4 justify-between items-center mb-6 p-4 bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-100 dark:border-gray-700">
@@ -266,7 +281,7 @@ export default function ManageProjects() {
 
                 {/* Create Button */}
                 <Button 
-                    className="w-full md:w-auto h-10 bg-indigo-600 hover:bg-indigo-700 font-semibold shadow-md transition-all duration-200"
+                    className="w-full cursor-pointer md:w-auto h-10 bg-indigo-600 hover:bg-indigo-700 font-semibold shadow-md transition-all duration-200"
                     onClick={() => router.push('/dashboard/create-project')} // Navigate to the create page
                 >
                     + Create New Project
@@ -308,7 +323,15 @@ export default function ManageProjects() {
                         ) : (
                             <TableRow>
                                 <TableCell colSpan={projectColumns.length} className="h-24 text-center text-gray-500 dark:text-gray-400">
-                                    {loading ? "Loading data..." : "No projects found."}
+                                    {loading ? 
+                                    
+                                    
+                                    <ProjectTableSkeleton></ProjectTableSkeleton>
+                                    
+                                    : 
+                                    
+                                    
+                                    "No projects found."}
                                 </TableCell>
                             </TableRow>
                         )}

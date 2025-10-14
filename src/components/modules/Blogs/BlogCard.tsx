@@ -115,6 +115,7 @@ export default function BlogCard({ blog }: { blog: Blog }) {
     
   // 🔥 ইমেজ URL ফিক্স
   const imageUrl = blog?.image as string
+  console.log("imm",imageUrl);
   // Framer Motion Variants for Hover Effect
   const cardVariants = {
     rest: { scale: 1, transition: { duration: 0.3 } },

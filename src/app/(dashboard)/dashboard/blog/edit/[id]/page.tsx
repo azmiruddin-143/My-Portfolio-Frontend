@@ -5,7 +5,7 @@ import BlogForm from '@/components/modules/Blogs/BlogForm';
 
 interface BlogEditPageProps {
     params: {
-        id: string; 
+        id: string;
     };
 }
 
@@ -13,7 +13,7 @@ interface BlogData {
     id: number;
     title: string;
     content: string;
-    image: string | null; 
+    image: string | null;
 }
 
 
@@ -39,10 +39,12 @@ export default async function BlogEditPage({ params }: BlogEditPageProps) {
 
 
     return (
-        <BlogForm
-            initialData={blogData}
-            type="edit"
-            blogId={blogId}
-        />
+        <div className='w-4xl'>
+            <BlogForm
+                initialData={blogData}
+                type="edit"
+                blogId={blogId}
+            />
+        </div>
     );
 }

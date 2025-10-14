@@ -157,13 +157,13 @@ export default async function BlogSinglePage({ params }: { params: {
 
                     {/* Author */}
                     <span className="flex items-center gap-2 font-semibold text-gray-700 dark:text-gray-300">
-                        <User className="h-4 w-4 text-indigo-500" /> By: {blog.author?.name}
+                        <User className="h-4 w-4 text-indigo-500" /> By: Azmir Uddin (Owner)
                     </span>
 
                     {/* Date */}
-                    <span className="flex items-center gap-2">
+                    {/* <span className="flex items-center gap-2">
                         <Calendar className="h-4 w-4 text-green-500" /> {formatDateTime(blog.createdAt)}
-                    </span>
+                    </span> */}
 
                     {/* Views */}
                     <span className="flex items-center gap-2">

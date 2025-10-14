@@ -129,11 +129,11 @@ export default async function ProjectDetailsPage({ params }: { params: { id: str
                         {/* Meta Data */}
                         <div className="flex justify-center gap-6 text-sm md:text-base text-gray-300">
                             <span className="flex items-center gap-2">
-                                <User className="h-4 w-4" /> By: {project?.user?.name}
+                                <User className="h-4 w-4" />By: Azmir Uddin (Owner)
                             </span>
-                            <span className="flex items-center gap-2">
+                            {/* <span className="flex items-center gap-2">
                                 <Calendar className="h-4 w-4" /> Date: {formatDateTime(project.createdAt)}
-                            </span>
+                            </span> */}
                         </div>
                         
                         {/* CTA Buttons */}
@@ -194,7 +194,7 @@ export default async function ProjectDetailsPage({ params }: { params: { id: str
                                 <div key={index} className="relative w-full aspect-video rounded-xl overflow-hidden shadow-lg border border-gray-200">
                                     <Image
                                         src={imgUrl}
-                                        alt={`Screenshot ${index + 2}`}
+                                        alt={"Plz Image Upload"}
                                         fill={true}
                                         sizes="(max-width: 768px) 100vw, 50vw"
                                         style={{ objectFit: 'cover' }}
