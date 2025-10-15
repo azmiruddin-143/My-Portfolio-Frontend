@@ -19,49 +19,21 @@ import { Mail, User, Shield,  } from 'lucide-react';
 // }
 
 export default function AdminProfileDashboard() {
-  // Note: এখন ownerData পাওয়ার জন্য আপনাকে সার্ভার-সাইডে কিছু একটা করতে হবে, 
-    // অথবা ডেটা লোড হওয়ার পর ownerData টি state/context থেকে লোড করতে হবে।
-    // যেহেতু আপনি localStorage ব্যবহার করছেন, আমরা ধরে নিচ্ছি AuthWrapper চেক করে দিয়েছে।
-    
-    // ... (ownerData লোড করার সহজ লজিক এখানে যুক্ত করা হলো)
-    
-    // const router = useRouter();
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const [ownerData, setOwnerData] = useState<any>(null); // State of the currently logged in user
 
     useEffect(() => {
-        // AuthWrapper check has already passed. Just load the display data.
         const storedData = localStorage.getItem('adminData');
         if (storedData) {
             setOwnerData(JSON.parse(storedData));
         }
     }, []);
 
-    if (!ownerData) return null; // Wait for the local data to be set
-
-    // ... (আপনার Admin Profile Design কোড এখানে) ...
+    if (!ownerData) return null;
 
 
-
-    // --- Logout Logic (Client Side) ---
-    // const handleLogout = () => {
-    //     localStorage.removeItem(LOCAL_STORAGE_KEY)
-    //     router.push(LOGIN_ROUTE);
-    // };
-
-
-    // --- Loading State ---
-    // if (isLoading) {
-    //     return (
-    //         <div className="min-h-screen flex items-center justify-center bg-gray-100 dark:bg-gray-900">
-    //              <Loader2 className="h-10 w-10 animate-spin text-indigo-500" />
-    //         </div>
-    //     );
-    // }
-    
-    // --- Error/Unauthorised State (যদি ডেটা লোড হয় কিন্তু অ্যাক্সেস না থাকে) ---
     if (!ownerData) {
-        // এটি useEffect দ্বারা হ্যান্ডেল করা উচিত, তবুও ফলব্যাক
+
         return <div className='p-8 text-red-500'>Access Denied. Redirecting...</div>;
     }
 
@@ -95,15 +67,7 @@ export default function AdminProfileDashboard() {
                     <InfoRow icon={Shield} label="Access Role" value={ownerData.role} isBadge={true} />
                 </div>
 
-                {/* Action Button */}
-                {/* <div className="pt-6">
-                    <Button 
-                        onClick={handleLogout} 
-                        className="w-full bg-red-600 hover:bg-red-700 text-lg h-12 transition-all duration-300"
-                    >
-                        <LogOut className="h-5 w-5 mr-2" /> Log Out
-                    </Button>
-                </div> */}
+         
 
             </div>
         </div>

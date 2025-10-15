@@ -17,6 +17,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { revalidateProjectPage } from '../../../../../../app/revalidate-actions';
+import ProjectFormSkeleton from '@/components/skeletons/ProjectFormSkeleton';
 // =================================================================
 // 1. Types and Schema
 // =================================================================
@@ -221,7 +222,7 @@ const EditProject = ({ params }: EditProjectProps) => {
 
         if (result.success) {
             await revalidateProjectPage(projectId.toString());
-            toast.success(result.message);
+            toast.success("Project Update successfully");
             router.push(`/dashboard/manage-projects`); // Redirect to the project listing page
         } else {
             toast.error(result.message);
@@ -232,11 +233,10 @@ const EditProject = ({ params }: EditProjectProps) => {
     // 4.4. Loading/Error States (remains the same)
     // -------------------------
     if (isLoading) {
-        // ... Loading JSX ...
+ 
         return (
-            <div className="min-h-screen flex items-center justify-center">
-                <p className="ml-3 text-lg text-gray-700 dark:text-gray-300">Loading project data...</p>
-            </div>
+          
+            <ProjectFormSkeleton></ProjectFormSkeleton>
         );
     }
 

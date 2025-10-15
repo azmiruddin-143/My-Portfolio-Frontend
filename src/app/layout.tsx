@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import { Toaster } from "react-hot-toast";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -13,8 +14,11 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Next Blog",
-  description: "A simple blog built with Next.js, Tailwind CSS, and shadcn/ui.",
+  title: "Azmir Uddin",
+  description: "A simple Portfolio Website",
+    icons: {
+    icon: "/favicon.ico"
+  },
 };
 
 export default function RootLayout({
@@ -25,10 +29,14 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
+
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        {/* <AuthProviders>{children}</AuthProviders> */}
         {children}
+         <Toaster
+            position="top-center" 
+            reverseOrder={false}
+        />
       </body>
     </html>
   );

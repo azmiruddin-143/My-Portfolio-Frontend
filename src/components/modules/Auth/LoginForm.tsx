@@ -62,7 +62,6 @@ export default function LoginForm() {
 
       const myLoginData = data?.user
       localStorage.setItem("adminData", JSON.stringify(myLoginData));
-      console.log("login Data", data?.user);
 
       if (!response.ok || data.success === false) {
         const errorMessage =

@@ -91,8 +91,6 @@ export default function Sidebar() {
                
             });
  
-            console.log("ss",response);
-             
 
             if (response.ok || response.status === 204) {
                 localStorage.removeItem("adminData");

@@ -3,7 +3,7 @@ import { Mail, MapPin, Phone, Send, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 const ContactPage = () => {
-    // এখানে আপনার ফর্ম জমা দেওয়ার লজিক এবং state যুক্ত করতে পারেন
+
     const isSubmitting = false; 
 
     return (
@@ -76,7 +76,7 @@ const ContactPage = () => {
                             {/* Submit Button */}
                             <Button
                                 type="submit" 
-                                className="w-full py-3 text-lg font-semibold bg-indigo-600 hover:bg-indigo-700 dark:bg-indigo-500 dark:hover:bg-indigo-600 transition duration-150"
+                                className="w-full cursor-pointer py-3 text-lg font-semibold bg-indigo-600 hover:bg-indigo-700 dark:bg-indigo-500 dark:hover:bg-indigo-600 transition duration-150"
                                 disabled={isSubmitting}
                             >
                                 {isSubmitting ? (

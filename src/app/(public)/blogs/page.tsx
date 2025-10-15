@@ -19,7 +19,7 @@ const AllBlogsPage = async () => {
     try {
         const res = await fetch("https://developerazmir.vercel.app/api/v1/blog", {
              next: { 
-            revalidate: 60 
+            revalidate: 3
         }
         });
         

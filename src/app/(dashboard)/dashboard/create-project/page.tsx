@@ -111,8 +111,7 @@ const CreateProject = () => {
       thumbnail: finalThumbnails,
     };
 
-    // console.log(payload);
-    // // ... (API কল লজিক)
+ 
     try {
       const response = await fetch("https://developerazmir.vercel.app/api/v1/project", {
         method: "POST",

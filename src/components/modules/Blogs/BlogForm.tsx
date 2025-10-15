@@ -88,7 +88,7 @@ export default function BlogForm({ initialData, type, blogId }: BlogFormProps) {
 
       if (response.ok && data.success) {
         await revalidateProjectPage(blogId.toString());
-        toast.success(`Blog post ID ${blogId} updated successfully!`);
+        toast.success(`Blog post updated successfully!`);
         // আপডেটের পর ম্যানেজ পেজে রিডাইরেক্ট
         router.push('/dashboard/manage-blogs'); 
       } else {

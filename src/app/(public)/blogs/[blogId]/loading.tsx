@@ -1,7 +1,7 @@
 // app/blogs/[blogId]/loading.tsx
 
 import React from 'react';
-import { ArrowLeft, Loader2 } from 'lucide-react';
+import { ArrowLeft } from 'lucide-react';
 
 const BlogSingleSkeleton: React.FC = () => {
     return (

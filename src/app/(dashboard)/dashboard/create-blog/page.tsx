@@ -12,7 +12,7 @@ import * as z from "zod";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import { Textarea } from "@/components/ui/textarea";
-import { Loader2 } from "lucide-react"; 
+import { Loader2 } from "lucide-react";
 
 // ----------------------------------------------------------------
 // A. ZOD SCHEMA (VALIDATION)
@@ -20,8 +20,8 @@ import { Loader2 } from "lucide-react";
 const CreateBlogSchema = z.object({
   title: z.string().min(10, { message: "Title must be at least 10 characters." }).max(250, { message: "Title is too long." }),
   content: z.string().min(20, { message: "Content must be at least 20 characters for a meaningful post." }),
-  
-  image: z.string().url({ message: "A valid image URL is required." }), 
+
+  image: z.string().url({ message: "A valid image URL is required." }),
 });
 
 type CreateBlogFormValues = z.infer<typeof CreateBlogSchema>;
@@ -30,12 +30,12 @@ type CreateBlogFormValues = z.infer<typeof CreateBlogSchema>;
 export default function CreateBlog() {
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
-  
+
   const form = useForm<CreateBlogFormValues>({
     resolver: zodResolver(CreateBlogSchema),
     defaultValues: {
       title: "",
-      content: "", 
+      content: "",
       image: "",
     },
   });
@@ -43,13 +43,13 @@ export default function CreateBlog() {
 
   const onSubmit = async (values: CreateBlogFormValues) => {
     setIsSubmitting(true);
-    
+
     // Payload তৈরি করা
     const payload = {
-        title: values.title,
-        content: values.content, 
-        image: values.image, 
-        
+      title: values.title,
+      content: values.content,
+      image: values.image,
+
     };
 
     try {
@@ -59,14 +59,17 @@ export default function CreateBlog() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(payload),
-        credentials: "include", 
+        credentials: "include",
       });
 
       const data = await response.json();
 
       if (response.ok && data.success) {
         toast.success("Blog post created successfully!");
-        form.reset(); 
+        form.reset();
+       
+        await fetch("https://developerazmir.vercel.app/api/revalidate?path=/blogs", { method: 'GET' }); 
+
         router.push('/dashboard/manage-blogs');
       } else {
         toast.error(data.message || "Failed to create blog post. Check backend logs.");
@@ -81,7 +84,7 @@ export default function CreateBlog() {
   return (
     <div className="min-h-screen py-10">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-        
+
         <h1 className="text-4xl font-extrabold mb-8 text-center text-gray-800 dark:text-white">
           Create New Blog Post
         </h1>
@@ -91,7 +94,7 @@ export default function CreateBlog() {
             onSubmit={form.handleSubmit(onSubmit)}
             className="space-y-8 bg-white dark:bg-gray-800 p-6 sm:p-8 rounded-xl shadow-2xl border border-gray-100 dark:border-gray-700"
           >
-            
+
             {/* 1. Title Input */}
             <FormField
               control={form.control}
@@ -100,10 +103,10 @@ export default function CreateBlog() {
                 <FormItem>
                   <FormLabel className="text-xl font-bold">Post Title *</FormLabel>
                   <FormControl>
-                    <Input 
-                        placeholder="Write a compelling title for your blog post" 
-                        className="h-12 text-xl dark:bg-gray-700 dark:text-white"
-                        {...field} 
+                    <Input
+                      placeholder="Write a compelling title for your blog post"
+                      className="h-12 text-xl dark:bg-gray-700 dark:text-white"
+                      {...field}
                     />
                   </FormControl>
                   <FormMessage />
@@ -119,10 +122,10 @@ export default function CreateBlog() {
                 <FormItem>
                   <FormLabel className="text-xl font-bold">Image URL *</FormLabel>
                   <FormControl>
-                    <Input 
-                        placeholder="Paste the URL of your cover image here (e.g., https://example.com/image.jpg)" 
-                        className="h-12 dark:bg-gray-700 dark:text-white"
-                        {...field} 
+                    <Input
+                      placeholder="Paste the URL of your cover image here (e.g., https://example.com/image.jpg)"
+                      className="h-12 dark:bg-gray-700 dark:text-white"
+                      {...field}
                     />
                   </FormControl>
                   <FormMessage />
@@ -139,29 +142,29 @@ export default function CreateBlog() {
                   <FormLabel className="text-xl font-bold">Content *</FormLabel>
                   <FormControl>
                     <Textarea
-                        placeholder="Start writing your blog content here..."
-                        className="min-h-[300px] text-lg resize-y dark:bg-gray-700 dark:text-white"
-                        {...field} 
+                      placeholder="Start writing your blog content here..."
+                      className="min-h-[300px] text-lg resize-y dark:bg-gray-700 dark:text-white"
+                      {...field}
                     />
                   </FormControl>
-                  <FormMessage /> 
+                  <FormMessage />
                 </FormItem>
               )}
             />
 
             {/* 4. Submit Button */}
-            <Button 
-                type="submit" 
-                className="w-full h-14 text-xl font-bold bg-indigo-600 hover:bg-indigo-700 transition-all duration-200" 
-                disabled={isSubmitting}
+            <Button
+              type="submit"
+              className="w-full h-14 text-xl font-bold bg-indigo-600 hover:bg-indigo-700 transition-all duration-200"
+              disabled={isSubmitting}
             >
               {isSubmitting ? (
-                  <>
-                      <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-                      Publishing...
-                  </>
+                <>
+                  <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                  Publishing...
+                </>
               ) : (
-                  "Publish Post"
+                "Publish Post"
               )}
             </Button>
           </form>
